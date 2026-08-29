@@ -55,9 +55,10 @@ python scripts/fetch_covers.py
 It only downloads what is missing. Books with no cover fall back to a
 typographic cover automatically, which is a legitimate look here — not a bug.
 
-**Add your photo** — save it as `assets/img/portrait.jpg`. The hero picks it up
-on its own and applies the black-and-white treatment. Portrait orientation
-(roughly 4:5) works best.
+**Add your photo** — save it as `assets/img/portrait.png` (or update the
+`data-portrait` path in `index.html`/`about.html` if you use a `.jpg`). The
+hero and About page pick it up automatically. Portrait orientation (roughly
+4:5) works best.
 
 **Add a real project case study** — the projects page currently reuses the
 `PROJECTS` array from `home.js`. When you write a real case study, create
