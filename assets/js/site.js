@@ -155,12 +155,13 @@ function initLinks(root) {
 
 /* Use a real portrait if the file is present; otherwise keep the monogram. */
 function initPortrait() {
-  const box = document.querySelector("[data-portrait]");
-  if (!box) return;
-  const img = new Image();
-  img.onload = () => { box.parentElement.innerHTML = ""; box.parentElement.appendChild(img); };
-  img.src = box.dataset.portrait;
-  img.alt = SITE.name;
+  document.querySelectorAll("[data-portrait]").forEach(box => {
+    const parent = box.parentElement;
+    const img = new Image();
+    img.onload = () => { parent.innerHTML = ""; parent.appendChild(img); };
+    img.src = box.dataset.portrait;
+    img.alt = SITE.name;
+  });
 }
 
 function initReveal() {
