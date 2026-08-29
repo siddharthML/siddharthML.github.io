@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects — Siddharth Chatterjee</title>
+<meta name="description" content="Selected AI platform and forecasting work by Siddharth Chatterjee. Case studies coming soon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body id="top">
+<div data-nav></div>
+
+<main id="main" class="wrap section">
+
+  <a class="back-link" href="index.html"><i data-icon="arrowLeft" data-size="18"></i> Back to Home</a>
+
+  <div class="page-banner reveal">
+    <p class="eyebrow">Selected work</p>
+    <h1 class="h-1">Projects</h1>
+    <p class="lead mt-0" style="color:var(--ink)">
+      AI platforms, agentic systems and forecasting engines — taken from zero to production.
+    </p>
+  </div>
+
+  <!-- ---------------------------------------------------- placeholder note -->
+  <div class="card panel-sand mt-4 reveal" style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+    <div class="icon-tile is-wiggling" style="margin-bottom:0"><i data-icon="pen"></i></div>
+    <div style="flex:1;min-width:260px">
+      <h2 class="h-3">Case studies in progress</h2>
+      <p class="mt-0" style="margin-bottom:0">
+        Each project below will get a full write-up in the same shape: the problem, my role, the
+        decisions, and the measured results. Until then, here is the short version. Happy to walk
+        through any of them in detail — <a href="#contact"><b>get in touch</b></a>.
+      </p>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------- project cards -->
+  <div class="grid grid-2 mt-4" id="project-list"></div>
+
+</main>
+
+<div data-contact></div>
+<div data-footer></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/home.js"></script>
+<script>
+/* The projects page reuses the PROJECTS list from home.js so there is one
+   place to edit. Replace `renderPage` below when real case studies exist. */
+function renderPage() {
+  document.getElementById("project-list").innerHTML = PROJECTS.map((p, i) => `
+    <article class="card card--hover reveal ${i % 2 ? "reveal--right" : "reveal--left"}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
+        <div class="icon-tile panel-${p.color}"><i data-icon="${p.icon}"></i></div>
+        <span class="tag" style="background:var(--canvas)">Coming soon</span>
+      </div>
+      <p class="eyebrow mt-0" style="margin-bottom:4px">${p.company}</p>
+      <h2 class="h-3">${p.title}</h2>
+      <p style="font-size:15px">${p.body}</p>
+      <div>${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
+    </article>`).join("");
+}
+</script>
+</body>
+</html>
