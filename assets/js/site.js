@@ -15,12 +15,14 @@ const SITE = {
   linkedin: "https://www.linkedin.com/in/siddharth-c-8257a34b/",
   github: "https://github.com/siddharthML/",
   scholar: "https://scholar.google.co.uk/citations?view_op=list_works&hl=en&user=T7KJ8WsAAAAJ",
+  cv: "assets/Siddharth-Chatterjee-CV.pdf",
   nav: [
     { label: "Home",        href: "index.html" },
     { label: "About",       href: "about.html" },
     { label: "Projects",    href: "projects.html" },
     { label: "Publications", href: "publications.html" },
     { label: "Bookshelf",   href: "bookshelf.html" },
+    { label: "CV",          href: "assets/Siddharth-Chatterjee-CV.pdf", external: true },
     { label: "Get in Touch", href: "index.html#contact" }
   ]
 };
@@ -71,8 +73,9 @@ function renderNav(host) {
   const here = currentPage();
   const links = SITE.nav.map(item => {
     const target = item.href.split("#")[0];
-    const isCurrent = target === here && !item.href.includes("#");
-    return `<a href="${item.href}"${isCurrent ? ' aria-current="page"' : ""}>${item.label}</a>`;
+    const isCurrent = target === here && !item.href.includes("#") && !item.external;
+    const attrs = item.external ? ' target="_blank" rel="noopener"' : "";
+    return `<a href="${item.href}"${attrs}${isCurrent ? ' aria-current="page"' : ""}>${item.label}</a>`;
   }).join("");
 
   host.outerHTML = `
@@ -108,17 +111,43 @@ function renderContact(host) {
       <div class="wrap">
         <span class="sticker reveal reveal--zoom">Let's Connect</span>
         <h2 class="h-1 mt-3 reveal">Get in Touch</h2>
-        <p class="lead reveal" style="max-width:52ch;margin-inline:auto">
-          Open to conversations about AI products, agentic platforms, forecasting systems,
+        <p class="lead reveal" style="max-width:54ch;margin-inline:auto">
+          Open to conversations about enterprise AI platforms, agentic systems,
           or anything worth building. The fastest way to reach me is LinkedIn.
         </p>
-        <div class="contact__actions">
-          <a class="btn btn--linkedin reveal reveal--left" href="${SITE.linkedin}" target="_blank" rel="noopener">
-            ${icon("linkedin", 20)} Connect on LinkedIn
-          </a>
-          <a class="btn reveal reveal--right" href="mailto:${SITE.email}">
-            ${icon("mail", 20)} ${SITE.email}
-          </a>
+
+        <div class="grid grid-2 mt-4" style="align-items:stretch;text-align:left">
+          <div class="card panel-canvas reveal reveal--left">
+            <div class="cv-card">
+              <div class="cv-card__doc">${icon("pen", 30)}</div>
+              <div style="flex:1;min-width:190px">
+                <p class="eyebrow mt-0" style="margin-bottom:4px">Curriculum Vitae</p>
+                <h3 class="h-3">My CV</h3>
+                <p style="font-size:15px;margin-bottom:14px">
+                  Eleven years of AI/ML product work, in two pages.
+                </p>
+                <a class="btn btn--blue" href="${SITE.cv}" target="_blank" rel="noopener">
+                  ${icon("arrowDown", 18)} Download CV
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card panel-canvas reveal reveal--right">
+            <p class="eyebrow mt-0" style="margin-bottom:4px">Say hello</p>
+            <h3 class="h-3">Reach me directly</h3>
+            <p style="font-size:15px;margin-bottom:16px">
+              Happy to talk shop, compare notes, or dig into a problem.
+            </p>
+            <div style="display:flex;flex-wrap:wrap;gap:12px">
+              <a class="btn btn--linkedin" href="${SITE.linkedin}" target="_blank" rel="noopener">
+                ${icon("linkedin", 20)} LinkedIn
+              </a>
+              <a class="btn" href="mailto:${SITE.email}">
+                ${icon("mail", 20)} Email
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>`;

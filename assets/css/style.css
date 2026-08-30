@@ -67,14 +67,16 @@ li { margin-bottom: .45em; }
 
 :focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 
-/* --------------------------------------------------------------- surfaces */
-.panel-blue     { background: var(--blue); }
-.panel-pink     { background: var(--pink); }
-.panel-lavender { background: var(--lavender); }
-.panel-aqua     { background: var(--aqua); }
-.panel-sand     { background: var(--sand); }
-.panel-canvas   { background: var(--canvas-2); }
-.panel-ink      { background: var(--ink); color: var(--canvas); }
+/* --------------------------------------------------------------- surfaces
+   Doubled selectors (.panel-x.panel-x) so these win against component rules
+   like `.card`, which are declared later in the file with equal specificity. */
+.panel-blue.panel-blue         { background: var(--blue); }
+.panel-pink.panel-pink         { background: var(--pink); }
+.panel-lavender.panel-lavender { background: var(--lavender); }
+.panel-aqua.panel-aqua         { background: var(--aqua); }
+.panel-sand.panel-sand         { background: var(--sand); }
+.panel-canvas.panel-canvas     { background: var(--canvas-2); }
+.panel-ink.panel-ink           { background: var(--ink); color: var(--canvas); }
 
 /* full-bleed tinted bands */
 .band { position: relative; }
@@ -479,6 +481,81 @@ a.card, .card--link { text-decoration: none; display: block; }
 }
 .pub__venue { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
 
+/* ------------------------------------------------- background mini-cards */
+/* Each fact is its own bordered sub-card rather than a bullet in a list. */
+.mini {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--canvas-2); border: 3px solid var(--ink); box-shadow: var(--shadow-sm);
+  padding: 13px 15px; margin-bottom: 12px;
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease);
+}
+.mini:last-child { margin-bottom: 0; }
+.mini:hover { transform: translate(-2px, -2px); box-shadow: var(--shadow); }
+.mini__icon { flex: none; display: grid; place-items: center; width: 28px; height: 28px; margin-top: 1px; }
+.mini__body { min-width: 0; }
+.mini__body b { display: block; font-size: 14px; line-height: 1.3; }
+.mini__body span { display: block; margin-top: 3px; font-size: 12px; color: var(--ink-soft); }
+
+/* ------------------------------------------------- project card w/ header */
+.proj {
+  display: flex; flex-direction: column; text-decoration: none;
+  background: var(--canvas-2); border: var(--border); box-shadow: var(--shadow);
+  transition: transform .18s var(--ease), box-shadow .18s var(--ease);
+}
+.proj:hover { transform: translate(-3px, -3px); box-shadow: var(--shadow-lg); }
+.proj__head {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 18px 20px; border-bottom: var(--border);
+}
+.proj__head .icon-tile,
+.proj__head .arrow-tile {
+  margin-bottom: 0; width: 48px; height: 48px;
+  background: var(--canvas-2); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink);
+}
+.proj__head .arrow-tile { display: grid; place-items: center; flex: none; }
+.proj:hover .arrow-tile { transform: translate(2px, 0); }
+.arrow-tile { transition: transform .18s var(--ease); }
+.proj__body { padding: 22px 20px; flex: 1; display: flex; flex-direction: column; }
+.proj__body h3 { transition: text-decoration-color .15s var(--ease); }
+.proj:hover .proj__body h3 { text-decoration: underline; text-underline-offset: 4px; }
+.proj__tags { margin-top: auto; padding-top: 12px; }
+
+/* ---------------------------------------------------------- brands band */
+.brand-band { border-block: var(--border); padding-block: 18px; overflow: hidden; }
+.brand-band--pink     { background: var(--pink); }
+.brand-band--sand     { background: var(--sand); }
+.brand-band__track { display: flex; width: max-content; align-items: center; animation: marquee 46s linear infinite; }
+.brand-band--rev .brand-band__track { animation-direction: reverse; }
+.brand-logo {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  flex: none; margin-inline: 12px; padding: 12px 20px; height: 76px; min-width: 150px;
+  background: var(--canvas-2); border: 3px solid var(--ink); box-shadow: var(--shadow-sm);
+}
+.brand-logo img { max-height: 42px; max-width: 130px; width: auto; height: auto; object-fit: contain; }
+.brand-logo span {
+  font-size: 16px; font-weight: 700; letter-spacing: .02em; text-align: center;
+  text-transform: uppercase; line-height: 1.15;
+}
+
+/* ------------------------------------------------------- recommendation */
+.rec { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
+.rec__person { text-align: center; }
+.rec__photo {
+  width: 140px; height: 140px; margin: 0 auto 14px;
+  border: var(--border); box-shadow: var(--shadow); overflow: hidden;
+  background: var(--lavender);
+}
+.rec__photo img { width: 100%; height: 100%; object-fit: cover; }
+.rec__quote { font-size: 17px; line-height: 1.6; }
+.rec__mark { color: var(--pink); }
+
+/* --------------------------------------------------------------- CV card */
+.cv-card { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; text-align: left; }
+.cv-card__doc {
+  flex: none; display: grid; place-items: center; width: 72px; height: 92px;
+  background: var(--canvas-2); border: var(--border); box-shadow: var(--shadow-sm);
+}
+
 /* --------------------------------------------------------------- contact */
 .contact {
   border-top: var(--border);
@@ -528,6 +605,9 @@ a.card, .card--link { text-decoration: none; display: block; }
   .grid-2 { grid-template-columns: 1fr; }
   .section { padding-block: 56px; }
   .portrait--sm { max-width: 200px; margin-inline: auto; }
+  .rec { grid-template-columns: 1fr; gap: 20px; }
+  .rec__person { text-align: left; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .rec__photo { width: 96px; height: 96px; margin: 0; }
 }
 
 @media (max-width: 620px) {

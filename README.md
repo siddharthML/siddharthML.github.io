@@ -32,7 +32,11 @@ assets/js/data.js      Book list — single source of truth
 assets/covers/         Book cover images
 assets/img/            Put portrait.jpg here to replace the monogram in the hero
 
+assets/logos/          Client brand logos for the "Clients I've Worked With" band
+assets/Siddharth-Chatterjee-CV.pdf   Linked from the nav CV tab and the CV card
+
 scripts/fetch_covers.py  Downloads book covers from Open Library
+scripts/fetch_logos.py   Downloads client logos from Wikipedia
 ```
 
 ## Common edits
@@ -40,8 +44,16 @@ scripts/fetch_covers.py  Downloads book covers from Open Library
 **Change a link, your email, or the nav** — `assets/js/site.js`, the `SITE`
 object at the top. Everything on the site reads from it.
 
-**Change homepage copy** — `assets/js/home.js`. The `FOCUS`, `ABOUT_PREVIEW`,
-`PROJECTS` and `METRICS` arrays map one-to-one onto what you see.
+**Change homepage copy** — `assets/js/home.js`. The `FOCUS`, `BACKGROUND`,
+`PROJECTS`, `METRICS` and `CLIENTS` arrays map one-to-one onto what you see.
+
+**Add a client to the logo band** — add an entry to `CLIENTS` in `home.js`,
+then add its Wikipedia page title to `BRANDS` in `scripts/fetch_logos.py` and
+run it. A client with no logo renders as a typographic wordmark instead, which
+is a deliberate part of the design, not a failure.
+
+**Swap the CV** — replace `assets/Siddharth-Chatterjee-CV.pdf`, or point
+`SITE.cv` in `site.js` at a different filename.
 
 **Change About or Publications copy** — edit the HTML directly; it is plain
 prose, no templating.
