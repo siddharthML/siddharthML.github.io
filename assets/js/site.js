@@ -124,7 +124,7 @@ function renderContact(host) {
                 <p class="eyebrow mt-0" style="margin-bottom:4px">Curriculum Vitae</p>
                 <h3 class="h-3">My CV</h3>
                 <p style="font-size:15px;margin-bottom:14px">
-                  Eleven years of AI/ML product work, in two pages.
+                  Eleven years of AI/ML product work, in one page.
                 </p>
                 <a class="btn btn--blue" href="${SITE.cv}" target="_blank" rel="noopener">
                   ${icon("arrowDown", 18)} Download CV

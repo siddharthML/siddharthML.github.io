@@ -32,20 +32,16 @@ const BACKGROUND = [
     color: "blue", icon: "cap", title: "Education",
     items: [
       { icon: "cap", title: "M.Sc. Machine Learning &amp; Data Science", note: "University College London · Merit" },
-      { icon: "cap", title: "M.Sc. Economics", note: "University of Warwick · Merit" },
-      { icon: "award", title: "Commonwealth Scholar", note: "Commonwealth Scholarship Commission" },
-      { icon: "book", title: "Ph.D.-level coursework, Stochastic Processes", note: "Indian School of Business" }
+      { icon: "cap", title: "M.Sc. Economics", note: "University of Warwick · Merit" }
     ]
   },
   {
     color: "lavender", icon: "spark", title: "Certifications",
     items: [
-      { icon: "spark", title: "Reinforcement Learning from Human Feedback", note: "DeepLearning.AI · 2025" },
-      { icon: "bot",   title: "Multi AI Agent Systems with crewAI",         note: "DeepLearning.AI · 2025" },
       { icon: "cpu",   title: "MCP: Build Rich-Context AI Apps with Anthropic", note: "DeepLearning.AI · 2025" },
-      { icon: "layers", title: "Introduction to On-Device AI",              note: "DeepLearning.AI · 2025" },
       { icon: "database", title: "Building &amp; Evaluating Advanced RAG",  note: "DeepLearning.AI · 2024" },
-      { icon: "gear",  title: "Finetuning Large Language Models",           note: "DeepLearning.AI · 2024" }
+      { icon: "gear",  title: "Finetuning Large Language Models",           note: "DeepLearning.AI · 2024" },
+      { icon: "layers", title: "LangChain for LLM Application Development", note: "DeepLearning.AI · 2024" }
     ]
   },
   {
@@ -54,7 +50,7 @@ const BACKGROUND = [
       { icon: "globe",     title: "Startups to government", note: "Tech startups, giant product companies, academia, government and NGOs" },
       { icon: "cap",       title: "Arts to engineering",    note: "Went from an arts undergraduate degree to an engineering master's" },
       { icon: "briefcase", title: "Wore most of the hats",  note: "Data science, engineering, marketing, sales, product — and everything between" },
-      { icon: "chart",     title: "Closet economist",       note: "Still love macroeconomics and forecasting" }
+      { icon: "chart",     title: "Professional economist", note: "Trained in macroeconomics and forecasting, and still love it" }
     ]
   }
 ];
@@ -159,7 +155,6 @@ function renderPage() {
     : `<div class="brand-logo"><span>${c.name}</span></div>`;
 
   document.getElementById("clients-a").innerHTML = CLIENTS.map(chip).join("");
-  document.getElementById("clients-b").innerHTML = [...CLIENTS].reverse().map(chip).join("");
 
   document.getElementById("shelf-preview").innerHTML = BOOKSHELF.preview.map((col, i) => `
     <div class="shelf-col panel-${col.color} reveal ${i === 1 ? "" : (i ? "reveal--right" : "reveal--left")}">
