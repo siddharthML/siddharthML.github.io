@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Online Evals: An Enterprise Playbook — Siddharth Chatterjee</title>
+<meta name="description" content="A practical enterprise playbook for evaluating production AI systems from traces and turning failures into a continuous quality loop.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/ai-layer.css?v=4">
+<link rel="stylesheet" href="assets/css/online-evals.css?v=1">
+</head>
+<body id="top" class="article-page evals-page">
+<div data-nav></div>
+<main id="main">
+  <header class="article-hero evals-hero">
+    <div class="wrap article-hero__inner">
+      <div>
+        <a class="back-link" href="projects.html"><i data-icon="arrowLeft" data-size="18"></i> All projects</a>
+        <span class="article-kicker reveal"><i data-icon="chart" data-size="18"></i> AI Evals</span>
+        <h1 class="article-title reveal">Online Evals: An Enterprise Playbook</h1>
+        <p class="article-deck reveal">Evaluate AI systems in production using the traces you already collect—and turn them into a continuous quality loop.</p>
+      </div>
+      <aside class="article-hero__aside reveal reveal--right">
+        <p class="eyebrow">The operating thesis</p>
+        <p class="lead" style="color:var(--ink);margin-bottom:0">A metric without a trace behind it is not evidence. Production quality begins with complete traces, disciplined error analysis and a loop that turns every confirmed failure into a test.</p>
+        <dl class="article-meta"><div><dt>Starting point</dt><dd>Production traces</dd></div><div><dt>Core method</dt><dd>Error analysis</dd></div><div><dt>Evaluator rule</dt><dd>Cheapest that works</dd></div><div><dt>End state</dt><dd>Continuous quality</dd></div></dl>
+      </aside>
+    </div>
+  </header>
+
+  <div class="wrap article-layout">
+    <aside class="article-toc" aria-label="Article contents">
+      <p class="article-toc__label">Contents</p><div class="article-toc__progress" aria-hidden="true"><span></span></div>
+      <ol>
+        <li><a href="#why-online">Why online evals</a></li>
+        <li><a href="#traces">Start from traces</a></li>
+        <li><a href="#error-analysis">Error analysis</a></li>
+        <li><a href="#taxonomy">Failure taxonomy</a></li>
+        <li><a href="#sampling">Sampling portfolio</a></li>
+        <li><a href="#evaluators">Evaluator design</a></li>
+        <li><a href="#calibration">Judge calibration</a></li>
+        <li><a href="#human-layer">Human layer</a></li>
+        <li><a href="#guardrails">Guardrails vs evals</a></li>
+        <li><a href="#quality-loop">Close the loop</a></li>
+        <li><a href="#metrics">Metric hierarchy</a></li>
+        <li><a href="#governance">Governance</a></li>
+        <li><a href="#failure-modes">Failure modes</a></li>
+        <li><a href="#maturity">Maturity path</a></li>
+        <li><a href="#conclusion">Conclusion</a></li>
+      </ol>
+    </aside>
+
+    <article class="article-body">
+      <h2 id="why-online"><span class="section-no">01</span>Why Online Evals Are the Enterprise Default</h2>
+      <p class="lede">Most teams reach the point where they need to evaluate an AI product without a neat golden dataset. What they do have is often more valuable: production traces.</p>
+      <p>Every user interaction leaves a record of the request, model behavior, tool calls, retrieved data, intermediate steps and final response. Offline evaluation tests a fixed, versioned dataset before release. Online evaluation observes the system with real users, real data and real ambiguity. Enterprises need both, but rarely begin with the offline kind: golden datasets are expensive to build and age quickly, while production traces accumulate every day.</p>
+      <div class="eval-principles">
+        <article><p class="eyebrow">Realism</p><h3>Actual behavior</h3><p>Traces preserve messy, multi-step and edge-case interactions that dataset designers did not anticipate.</p></article>
+        <article><p class="eyebrow">Freshness</p><h3>Current conditions</h3><p>Live traffic keeps evaluation aligned with new features, user behavior and emerging failure modes.</p></article>
+        <article><p class="eyebrow">Decision relevance</p><h3>Business outcomes</h3><p>Online evals answer whether the product is doing what users and the business need now.</p></article>
+      </div>
+      <p>The catch is that traces are raw material, not evaluation. Trustworthy signals require deliberate sampling, judging, human review and governance.</p>
+
+      <h2 id="traces"><span class="section-no">02</span>Start From Traces, Not Metrics</h2>
+      <p class="lede">You cannot evaluate what you cannot see, and you cannot improve what you have not understood.</p>
+      <p>A trace is the complete record of one execution—from the initial request to the final response. Capturing only the answer leaves the cause of failure unknowable: missing data, a retrieval filter, a skipped tool, a routing choice and an upstream timeout can all produce the same bad output.</p>
+      <p>Complete, structured instrumentation should span routing, agents, tools, retrieval and the model. Every trace needs stable identifiers for environment, session, user, tenant, model, prompt version, agent and tool. Latency, token counts, tool arguments, retrieved document IDs and filters are nearly free to log at execution time and expensive or impossible to reconstruct later.</p>
+      <section class="evals-stage reveal" aria-labelledby="trace-title">
+        <div class="evals-stage__head"><div><p class="eyebrow">Interactive trace anatomy</p><h2 id="trace-title">Instrument the whole execution</h2><p>Select each stage to inspect what the trace must preserve and which questions that evidence can answer.</p></div><span class="sticker">Follow the trace</span></div>
+        <div data-trace-explorer></div>
+      </section>
+      <div class="pullquote reveal">A pass rate without its model, prompt, tenant and sampling lineage is not a metric. It is a rumor.</div>
+
+      <h2 id="error-analysis"><span class="section-no">03</span>The Core Discipline: Error Analysis</h2>
+      <p>The most important evaluation activity is not writing evaluators. It is the human-led work of reading real traces, writing open-ended notes, clustering those notes into failure categories and refining the categories until new traces stop revealing new modes of failure.</p>
+      <ol class="decision-list">
+        <li><strong>Gather a diverse pool.</strong> Start with production data and supplement it with synthetic examples where traffic is thin or edge cases are rare.</li>
+        <li><strong>Read traces yourself first.</strong> Annotate at least 30 before asking an LLM to help; early suggestions bias what you notice.</li>
+        <li><strong>Record the first failure.</strong> Upstream errors cascade, so the first failure is usually the one that matters.</li>
+        <li><strong>Cluster the notes.</strong> Let an LLM propose groupings only after the manual pass, then review every cluster.</li>
+        <li><strong>Relabel and repeat.</strong> Continue until the taxonomy reaches saturation and new traces stop changing it.</li>
+      </ol>
+      <p>Generic helpfulness, coherence and hallucination scores may measure qualities unrelated to the product’s actual failures. Error analysis produces a taxonomy in the language of the product, where every metric maps to an owner who can fix the underlying problem.</p>
+
+      <h2 id="taxonomy"><span class="section-no">Worked example</span>What a Production-Grade Taxonomy Looks Like</h2>
+      <p>A practical taxonomy uses a small set of memorable level-one families and precise, actionable level-two codes. It is diagnostic rather than merely evaluative: a code should explain why the system failed and route the case to the right owner.</p>
+      <section class="evals-stage reveal" aria-labelledby="taxonomy-title">
+        <div class="evals-stage__head"><div><p class="eyebrow">Interactive failure taxonomy</p><h2 id="taxonomy-title">From failure family to accountable owner</h2><p>Explore the broad failure families. The unclassified fallback is a review trigger, not a convenient dumping ground.</p></div><span class="sticker">Diagnose, then route</span></div>
+        <div data-taxonomy></div>
+      </section>
+      <p>The data-and-retrieval family is where domain-specific subtlety often lives. The <strong>.7</strong> convention marks a data symptom caused by missing orchestration, preventing routing and tool-use defects from being silently attributed to the data team.</p>
+      <section class="comparison-explorer reveal" aria-label="Interactive data and retrieval failure codes"><div data-data-codes></div></section>
+      <p><strong>990.9—Unclassified</strong> is the shared fallback when no defined category fits. A rising fallback rate can indicate taxonomy drift, inadequate trace evidence, a weak judge prompt or a genuinely new product failure mode.</p>
+      <div class="eval-principles">
+        <article><p class="eyebrow">Principle 01</p><h3>Diagnostic, not decorative</h3><p>A label must explain why the response failed and direct the case to someone who can act.</p></article>
+        <article><p class="eyebrow">Principle 02</p><h3>Domain semantic</h3><p>Granularity, scenarios, versions and publication cycles matter more than generic AI-quality language.</p></article>
+        <article><p class="eyebrow">Principle 03</p><h3>Versioned like code</h3><p>Record the taxonomy version on every score so historical comparisons remain meaningful.</p></article>
+      </div>
+      <h3>How to derive your own taxonomy</h3>
+      <ul class="decision-list"><li>Open-code at least 30 traces before involving an LLM and describe the first failure from the user’s perspective.</li><li>Review every proposed cluster; superficially similar failures may belong to entirely different owners.</li><li>Maintain roughly 100 diverse traces for the human-agent loop and revisit the taxonomy after material product, prompt, model or tool changes.</li><li>Review small outlier-biased batches between major changes and name an owner for every failure family.</li></ul>
+
+      <h2 id="sampling"><span class="section-no">04</span>Sampling: The Art of Choosing What to Evaluate</h2>
+      <p>You cannot evaluate every trace, and a single sampling strategy will blind you. Run several samples in parallel and record the selection reason on every evaluated trace so unlike pass rates are never silently conflated.</p>
+      <section class="evals-stage reveal" aria-labelledby="sampling-title">
+        <div class="evals-stage__head"><div><p class="eyebrow">Interactive sampling portfolio</p><h2 id="sampling-title">Five samples, five different claims</h2><p>Select a sample to see what it reveals and what can go wrong when its result is interpreted without context.</p></div><span class="sticker">Selection is metadata</span></div>
+        <div data-sampling></div>
+      </section>
+      <h3>Automation-assisted sampling</h3>
+      <p><strong>Semantic stratification</strong> groups traces by similarity and samples across clusters, protecting distinct usage patterns from being drowned out by the most common query. <strong>Active learning</strong> uses new human labels to select the next most informative traces: likely failures, uncertain judge decisions, cases similar to a new failure and cases unlike anything already labeled.</p>
+      <p class="sampling-note"><strong>Practical sizing:</strong> use roughly 100 diverse traces for the initial human-agent loop; expect about 100–200 labeled examples per failure mode to calibrate an LLM judge across training, development and held-out test sets; keep a recurring regression suite of 100+ high-value examples small enough to run frequently.</p>
+
+      <h2 id="evaluators"><span class="section-no">05</span>Designing Evaluators That Deserve Trust</h2>
+      <p class="lede">Use the cheapest evaluator that reliably catches the failure, and reserve expensive judgment for problems that genuinely require it.</p>
+      <section class="evals-stage reveal" aria-labelledby="ladder-title">
+        <div class="evals-stage__head"><div><p class="eyebrow">Interactive evaluator ladder</p><h2 id="ladder-title">Escalate only as far as the failure requires</h2><p>Explore the cost hierarchy from deterministic rules to expert adjudication.</p></div><span class="sticker">Rules before judges</span></div>
+        <div data-evaluator-ladder></div>
+      </section>
+      <p>A common mistake is building LLM judges for failures a regular expression could catch. The reverse—using a rule for a judgment that requires domain context—is less common but equally damaging because it produces confident, wrong numbers.</p>
+      <h3>A worked evaluator assignment</h3>
+      <div class="mapping-table">
+        <table><thead><tr><th>Sub-code</th><th>Failure</th><th>Primary evaluator</th><th>Why</th><th>Owner</th></tr></thead><tbody>
+          <tr><td>130.1.1</td><td>Time-period data never loaded</td><td>Load/publication assertion</td><td>Objective system state</td><td>Data engineering</td></tr>
+          <tr><td>130.1.3</td><td>Metric or field does not exist</td><td>Catalog lookup + schema check; judge fallback</td><td>Existence is checkable; phrasing may need judgment</td><td>Data platform</td></tr>
+          <tr><td>130.2.1</td><td>Partial time range</td><td>Requested-versus-returned range check</td><td>Pure structural comparison</td><td>Retrieval engineering</td></tr>
+          <tr><td>130.2.7</td><td>Missing invocation causes partial retrieval</td><td>Expected tool-call check + judge</td><td>Presence is checkable; necessity needs judgment</td><td>Orchestration</td></tr>
+          <tr><td>130.3.3</td><td>Wrong version used</td><td>Requested-versus-queried version check</td><td>Exact comparison with complete instrumentation</td><td>Data platform</td></tr>
+          <tr><td>130.4.2</td><td>Stale snapshot used</td><td>Freshness assertion</td><td>Deterministic given publication metadata</td><td>Data engineering</td></tr>
+          <tr><td>130.x.x</td><td>Ambiguous data failure</td><td>Calibrated evidence-producing judge</td><td>Requires domain semantics</td><td>Eval team</td></tr>
+          <tr><td>140.x</td><td>Response quality and faithfulness</td><td>Calibrated LLM judge</td><td>Subjective qualities irreducible to rules</td><td>Eval + domain expert</td></tr>
+          <tr><td>Any</td><td>High-severity tenant or workflow</td><td>Dual independent human review</td><td>A wrong verdict costs more than review</td><td>Domain expert</td></tr>
+        </tbody></table>
+      </div>
+      <p>Whenever a judge is used, return a structured sub-code, evidence quoted from the trace, the responsible component and whether a required invocation was missing. Evidence makes a verdict auditable and a human override efficient.</p>
+
+      <h2 id="calibration"><span class="section-no">Judge discipline</span>Calibrating LLM Judges Against Humans</h2>
+      <p>An LLM judge is only as useful as its measured agreement with the people whose judgment it automates. Scope rubrics narrowly and prefer binary-leaning decisions to subjective 1–5 scales.</p>
+      <div class="calibration-flow" aria-label="LLM judge calibration sequence"><div>Define narrow rubric</div><div>Label 100–200 examples</div><div>Split train, dev and test</div><div>Measure TPR, TNR and confusion</div><div>Recalibrate after change</div></div>
+      <p>The confusion matrix is the most useful artifact because it reveals which categories the judge systematically conflates—usually a sign of rubric ambiguity or missing trace evidence. Watch conceptually close pairs such as data never loaded versus a current cycle not yet published, or granularity not modelled versus the wrong granularity returned.</p>
+      <p>The production model can usually judge scoped binary classifications if it agrees with expert labels. Establish agreement first with the most capable judge available; for high-stakes decisions, consider a different provider because related models can share blind spots.</p>
+      <h3>Represent uncertainty honestly</h3>
+      <div class="uncertainty-grid"><div><b>Confident</b>One supported classification</div><div><b>Ambiguous</b>Between named categories</div><div><b>Insufficient evidence</b>Instrumentation cannot support a verdict</div><div><b>Execution failure</b>The evaluator did not run successfully</div><div><b>New or unclassified</b>No taxonomy code fits</div></div>
+      <p>Do not write evaluator crashes or parse failures back as confident diagnoses. Exclude execution failures from quality metrics and make score identifiers deterministic—such as trace ID plus evaluator name—so reruns are idempotent and never create conflicting duplicate scores.</p>
+
+      <h2 id="human-layer"><span class="section-no">06</span>The Human Layer: Small, Expert and Empowered</h2>
+      <p>LLM judges scale judgment; they do not replace it. Human experts define the taxonomy, label calibration and regression data, resolve ambiguity, audit judge drift and discover new failure modes. Evaluation is a sensemaking process, not a static target that can be fully delegated.</p>
+      <p>For a focused product, a single domain expert can serve as the quality decision-maker and eliminate annotation conflicts. Multi-domain programs may need several annotators: label independently, measure agreement with a chance-corrected metric such as Cohen’s Kappa, then adjudicate disagreements and turn each one into a rubric refinement.</p>
+      <div class="human-interface">
+        <div><p class="eyebrow">What the expert sees</p><h3>A domain-shaped review surface</h3><ul><li>Render outputs as users experience them</li><li>Collapse raw technical detail behind disclosure controls</li><li>Support keyboard-driven pass/fail labeling</li><li>Show progress and evaluator verdicts alongside the trace</li></ul></div>
+        <div><p class="eyebrow">What the expert can do</p><h3>One-click quality actions</h3><ul><li>Add a case to the regression set</li><li>File a bug with trace evidence</li><li>Re-run an evaluator</li><li>Correct the label and improve the rubric</li></ul></div>
+      </div>
+      <p>Engineers identify retrieval, tool and integration failures; product managers and domain experts identify unmet expectations and missing capabilities. Over time, consolidate error analysis under the domain expert and show real outcomes—not merely whether a tool returned a success status. Avoid outsourcing core annotation to reviewers without product context. Automate the loop around the expert, not the expert’s judgment.</p>
+
+      <h2 id="guardrails"><span class="section-no">07</span>Evaluators Are Not Guardrails—and Vice Versa</h2>
+      <p>These systems have opposite operational requirements. Guardrails run synchronously in the request path and must be fast, deterministic and simple. Evaluators run after the fact and can afford heavier computation because they feed dashboards, regression suites and improvement loops rather than blocking the immediate response.</p>
+      <section class="evals-stage reveal" aria-labelledby="guardrail-title">
+        <div class="evals-stage__head"><div><p class="eyebrow">Interactive responsibility split</p><h2 id="guardrail-title">Same evidence, different job</h2><p>Switch between the two systems to compare their timing, constraints and operational result.</p></div><span class="sticker">Do not conflate them</span></div>
+        <div class="guardrail-switch" data-guardrail-switch></div>
+      </section>
+      <p>A deterministic check may serve both roles only when it meets the latency and false-positive budget of the live path. A slow or non-deterministic LLM judge almost never belongs there.</p>
+      <p>Do not let evaluators silently correct production responses. Classification confidence is not safe remediation. Limit automatic corrections to narrow, reversible cases with deterministic validation. Set the false-positive versus false-negative trade-off explicitly for every use case before automating.</p>
+
+      <h2 id="quality-loop"><span class="section-no">08</span>Closing the Loop: From Production Insight to Release Confidence</h2>
+      <p class="lede">Online evaluation discovers failure modes. Confirmed failures become labeled cases. Labeled cases become regression tests. Regression tests become release gates.</p>
+      <section class="evals-stage reveal" aria-labelledby="loop-title">
+        <div class="evals-stage__head"><div><p class="eyebrow">Interactive continuous quality loop</p><h2 id="loop-title">Every failure should improve the release system</h2><p>Select a stage to follow evidence from production observation to verified improvement.</p></div><span class="sticker">Evidence compounds</span></div>
+        <div data-quality-loop></div>
+      </section>
+      <ul class="decision-list"><li><strong>Reproduce before generalizing.</strong> Reduce a failure to the simplest case that still breaks; use multi-turn tests only when context is causal.</li><li><strong>Add confirmed failures to CI.</strong> Production monitoring exposes what the offline suite missed; make every confirmed mode durable.</li><li><strong>Prefer deterministic CI evals.</strong> Curated pre-release suites run often; reserve costly judges for production samples without references.</li><li><strong>Record lineage everywhere.</strong> Tie every score to its trace, judge, taxonomy, prompt, model and run versions.</li></ul>
+      <p>Release gates must be risk-based rather than global: no regression on authorization or data integrity, minimum success per critical workflow, no material degradation for protected segments, and latency and cost within budget. Every gate needs a dataset, metric, threshold, owner and expiring exception process.</p>
+
+      <h2 id="metrics"><span class="section-no">09</span>Metrics That Roll Up Without Washing Out</h2>
+      <p>Executives want one number; engineers need a hundred. Serve both with a metric hierarchy, not a composite score.</p>
+      <div class="metric-hierarchy">
+        <article><p class="eyebrow">Executive</p><h3>Business confidence</h3><p>Critical workflow success, severe incident rate, adoption and cost per successful task.</p></article>
+        <article><p class="eyebrow">Product</p><h3>Experience quality</h3><p>Success and failure rates by use case, segment, workflow and tenant.</p></article>
+        <article><p class="eyebrow">Engineering</p><h3>Root cause</h3><p>Failure distributions, tool transitions, latency, tokens, cost and regressions.</p></article>
+        <article><p class="eyebrow">Evaluation health</p><h3>Signal quality</h3><p>Judge agreement, taxonomy coverage, fallback and ambiguity rates, backlog and drift.</p></article>
+      </div>
+      <p>Every rollup must drill down to traces and the sample definition behind the number. Guard relentlessly against <strong>selection bias</strong>, where only pre-flagged failures are evaluated, and <strong>aggregate masking</strong>, where a healthy average hides a broken tenant or critical low-volume workflow. Multi-tenant platforms need segmented datasets, dashboards, thresholds and access controls.</p>
+      <h3>A transition-failure matrix</h3>
+      <p>For multi-step systems, tabulate the last successful step against the first failed step. Concentrated cells reveal where cascading failures begin and where engineering effort will have the highest leverage.</p>
+      <div class="transition-matrix" aria-label="Illustrative transition failure matrix"><b>Last success ↓ / First failure →</b><b>Retrieve</b><b>Tool call</b><b>Synthesize</b><b>Deliver</b><b>Route</b><span class="warm">7</span><span>3</span><span>1</span><span>0</span><b>Retrieve</b><span>—</span><span class="hot">24</span><span class="warm">8</span><span>2</span><b>Tool call</b><span>—</span><span>—</span><span class="hot">17</span><span>5</span><b>Synthesize</b><span>—</span><span>—</span><span>—</span><span class="warm">9</span></div>
+      <p>Review outcome metrics and process metrics together. Process failures are more deterministic and often easier to fix; improvements early in a workflow have outsized impact because errors cascade.</p>
+
+      <h2 id="governance"><span class="section-no">10</span>Governance: The Unglamorous Prerequisite</h2>
+      <p>At enterprise scale, the evaluation system is production infrastructure and must be governed like it.</p>
+      <div class="governance-grid">
+        <article><p class="eyebrow">01</p><h3>Data protection</h3><p>Apply redaction, retention, role-based access and tenant isolation to traces, reports and notifications.</p></article>
+        <article><p class="eyebrow">02</p><h3>Evaluator governance</h3><p>Version every rubric, calibration record and approved-use statement; define explicit prohibitions.</p></article>
+        <article><p class="eyebrow">03</p><h3>Auditability</h3><p>Attribute label overrides, taxonomy revisions, release exceptions and threshold changes.</p></article>
+        <article><p class="eyebrow">04</p><h3>Evaluator health</h3><p>Monitor agreement, fallbacks, parse failures and evidence completeness separately from product quality.</p></article>
+      </div>
+      <p>A judge model update, prompt regression or instrumentation gap can silently corrupt every score. The evaluation layer needs its own operational monitoring.</p>
+
+      <h2 id="failure-modes"><span class="section-no">11</span>Failure Modes to Expect—and Preempt</h2>
+      <div class="failure-grid">
+        <article><h3>Automation bias</h3><p>Treating judge output as ground truth without measured expert agreement.</p></article>
+        <article><h3>Vanity pass rates</h3><p>Optimizing for green dashboards instead of evaluators that expose real issues.</p></article>
+        <article><h3>Metric sprawl</h3><p>Building evaluators for imagined failures before doing error analysis on observed ones.</p></article>
+        <article><h3>Synthetic dependence</h3><p>Using synthetic data to infer production prevalence or represent complex real-world edges.</p></article>
+        <article><h3>Trace blindness</h3><p>Judging final answers without retrieval, tool-call and intermediate execution evidence.</p></article>
+        <article><h3>Frozen taxonomies</h3><p>Allowing product evolution to outrun the categories, owners and rubrics used to measure it.</p></article>
+      </div>
+
+      <h2 id="maturity"><span class="section-no">12</span>A Pragmatic Maturity Path</h2>
+      <p>Build the program in stages. Each one depends on the evidence discipline established by the stage before it, and none requires a pre-existing golden dataset.</p>
+      <div class="maturity-path" data-maturity>
+        <label><input type="checkbox"><span>01</span><span><strong>Make evaluation measurable.</strong> Instrument complete traces, establish the human error-analysis loop and derive the owned taxonomy from real failures.</span></label>
+        <label><input type="checkbox"><span>02</span><span><strong>Prove the evaluators.</strong> Create versioned expert labels by failure mode, measure judge agreement and version every rubric, prompt and judge model.</span></label>
+        <label><input type="checkbox"><span>03</span><span><strong>Stand up the sampling portfolio.</strong> Run random, failure-enriched and stratified samples with the selection reason recorded.</span></label>
+        <label><input type="checkbox"><span>04</span><span><strong>Close the loop.</strong> Feed failures into regression suites, compare baseline and candidate before release, and verify fixes after shipping.</span></label>
+        <label><input type="checkbox"><span>05</span><span><strong>Industrialize governance.</strong> Add redaction, RBAC, isolation, audit logs, evaluator monitoring and quarterly business-outcome review.</span></label>
+        <div class="maturity-score"><b data-maturity-count>0</b><span>of 5 capabilities established</span></div>
+      </div>
+
+      <h2 id="conclusion"><span class="section-no">Conclusion</span>Evaluation as the Operating System of Product Quality</h2>
+      <p>Online evaluation without golden references is not a degraded benchmark. It is how mature enterprises understand AI systems in real conditions: capture complete traces; let human error analysis define a precise, owned and versioned taxonomy; sample deliberately; use the cheapest evaluator that works; calibrate every judge against experts; and turn every confirmed failure into a test whose fix is verified in production.</p>
+      <div class="pullquote reveal">The traces you already collect are the dataset—provided you treat them with discipline.</div>
+      <p>Done well, evaluation stops being a reporting exercise after incidents. It becomes a continuous quality system that shows how the product behaves, whether it is safe to ship and whether it is actually improving. Quality compounds with every release because the evidence loop remembers what the organization has learned.</p>
+    </article>
+  </div>
+</main>
+<div data-contact></div><div data-footer></div>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/online-evals.js?v=1"></script>
+</body>
+</html>

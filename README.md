@@ -24,6 +24,7 @@ projects.html       Projects index
 building-ai-layer.html  Interactive enterprise AI architecture article
 building-ai-native-platform.html  Interactive greenfield AI-native architecture article
 building-enterprise-agent-harness.html  Interactive enterprise agent harness guide
+online-evals-enterprise-playbook.html  Interactive online evaluation playbook
 publications.html   Papers and awards
 bookshelf.html      The PM reading list
 
@@ -34,12 +35,14 @@ assets/js/bookshelf.js Bookshelf rendering
 assets/js/ai-layer.js  Interactive architecture explorer
 assets/js/ai-native.js Interactive greenfield decision and system-view explorers
 assets/js/agent-harness.js Interactive harness concepts, comparisons, and blueprint
+assets/js/online-evals.js Interactive trace, taxonomy, sampling, evaluator, and quality-loop explorers
 assets/js/data.js      Book list — single source of truth
 assets/covers/         Book cover images
 assets/img/            Put portrait.jpg here to replace the monogram in the hero
 assets/css/ai-layer.css Article and interactive diagram styles
 assets/css/ai-native.css Greenfield article interaction styles
 assets/css/agent-harness.css Enterprise harness article and interaction styles
+assets/css/online-evals.css Online evaluation article and interaction styles
 
 assets/logos/          Client brand logos for the "Clients I've Worked With" band
 assets/Siddharth-Chatterjee-CV.pdf   Linked from the nav CV tab and the CV card
