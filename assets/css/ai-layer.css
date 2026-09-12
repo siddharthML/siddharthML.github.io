@@ -329,7 +329,7 @@ body.article-page { background: var(--canvas-2); }
 .diagram-step strong { display: block; margin-bottom: 6px; }
 .diagram-help { padding: 13px 20px; border-top: 3px solid var(--ink); background: var(--blue); font-size: 12px; font-weight: 700; }
 .diagram-help a { color: inherit; text-decoration-thickness: 2px; text-underline-offset: 3px; }
-.diagram-canvas--platform { width: 1200px; min-width: 1200px; height: 760px; min-height: 760px; }
+.diagram-canvas--platform { width: 1200px; min-width: 1200px; height: 930px; min-height: 930px; }
 .platform-boundary {
   position: absolute;
   left: 388px;
@@ -358,6 +358,10 @@ body.article-page { background: var(--canvas-2); }
   right: 18px;
   font-size: 11px;
   font-weight: 700;
+}
+.platform-boundary.is-active {
+  background: rgba(170,220,235,.2);
+  box-shadow: inset 0 0 0 6px var(--blue);
 }
 .native-diagram { position: relative; margin-top: 48px; }
 .article-body .diagram-view-title {

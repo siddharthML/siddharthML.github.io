@@ -78,7 +78,7 @@ const ARCHITECTURE_VIEWS = {
 };
 
 const LAYER_MAP = {
-  width: 1200, height: 760,
+  width: 1200, height: 930,
   nodes: [
     { id: "raw", name: "Raw data", sub: "Data lake", x: 18, y: 194, w: 116, tone: "gray", group: "Legacy data", role: "System of record", detail: "The existing raw-data lake remains authoritative. Integration pipelines publish governed data without forcing a source-system rewrite." },
     { id: "columnar", name: "Columnar database", sub: "Clean analytical data", x: 184, y: 194, w: 136, tone: "blue", group: "Legacy data", role: "Clean-data interface", detail: "Airflow-style integration pipelines turn raw data into a fast analytical interface for agents and application services." },
@@ -98,11 +98,11 @@ const LAYER_MAP = {
     { id: "sandbox", name: "Python sandbox", sub: "K8s pod per tenant", x: 786, y: 450, w: 230, tone: "green", group: "Kubernetes", role: "Isolated execution", detail: "Each tenant receives an isolated execution boundary for generated Python and other untrusted workloads." },
     { id: "meter", name: "Usage metering", sub: "Pricing per agent run", x: 786, y: 562, w: 230, tone: "pink", group: "Kubernetes", role: "Commercial controls", detail: "Usage is attributed at agent-run granularity, allowing per-tenant accounting, quotas, and pricing." },
     { id: "mongo", name: "MongoDB", sub: "Conversation + run history", x: 786, y: 675, w: 230, tone: "purple", group: "Platform storage", role: "Document state", detail: "MongoDB retains conversation history, run documents, logs, and flexible event payloads produced by the AI layer." },
-    { id: "cicd", name: "CI/CD", sub: "Build + test coverage", x: 18, y: 675, w: 145, tone: "blue", group: "Delivery", role: "Build pipeline", detail: "The delivery pipeline builds the AI services and enforces deterministic tests plus AI evaluation gates." },
-    { id: "registry", name: "Container registry", sub: "Clean-start images", x: 350, y: 675, w: 170, tone: "gray", group: "Delivery", role: "Artifact store", detail: "Versioned, minimal images provide a repeatable and reviewable deployment artifact." },
-    { id: "argocd", name: "ArgoCD", sub: "GitOps deployment · separate repo", x: 555, y: 675, w: 175, tone: "green", group: "Delivery", role: "Deployment", detail: "ArgoCD reconciles the independently versioned AI layer into Kubernetes from a separate GitOps repository." }
+    { id: "cicd", name: "CI/CD", sub: "Build + test coverage", x: 18, y: 820, w: 145, tone: "blue", group: "Delivery", role: "Build pipeline", detail: "The delivery pipeline builds the AI services and enforces deterministic tests plus AI evaluation gates." },
+    { id: "registry", name: "Container registry", sub: "Clean-start images", x: 350, y: 820, w: 170, tone: "gray", group: "Delivery", role: "Artifact store", detail: "Versioned, minimal images provide a repeatable and reviewable deployment artifact." },
+    { id: "argocd", name: "ArgoCD", sub: "GitOps deployment · separate repo", x: 555, y: 820, w: 175, tone: "green", group: "Delivery", role: "Kubernetes deployment", detail: "ArgoCD reconciles the complete AI platform environment into Kubernetes from a separate GitOps repository." }
   ],
-  edges: [["raw","columnar"],["columnar","agent"],["pvc","agent"],["postgres","agent"],["redis","agent"],["falkor","agent"],["solr","agent"],["models","agent"],["rabbit","app"],["agent","app","dashed"],["app","nginx"],["user","nginx"],["agent","mcp"],["mcp","monitor"],["app","sandbox"],["sandbox","meter"],["monitor","mongo"],["meter","mongo"],["cicd","registry"],["registry","argocd"],["argocd","agent"]],
+  edges: [["raw","columnar"],["columnar","agent"],["pvc","agent"],["postgres","agent"],["redis","agent"],["falkor","agent"],["solr","agent"],["models","agent"],["rabbit","app"],["agent","app","dashed"],["app","nginx"],["user","nginx"],["agent","mcp"],["mcp","monitor"],["app","sandbox"],["sandbox","meter"],["monitor","mongo"],["meter","mongo"],["cicd","registry"],["registry","argocd"],["argocd","kubernetes"]],
   steps: [
     ["raw","columnar","Raw lake data is promoted through integration pipelines into the clean analytical store."],
     ["columnar","agent","The agent harness combines clean data with PostgreSQL, Redis, graph, search, and durable files."],
@@ -112,9 +112,16 @@ const LAYER_MAP = {
     ["rabbit","app","Long-running automation moves onto RabbitMQ and Celery workers."],
     ["app","sandbox","Tenant-specific code execution is isolated in a dedicated Kubernetes sandbox."],
     ["meter","mongo","Usage, traces, and run state are persisted for operations and commercial controls."],
-    ["cicd","argocd","Tested images move through the registry and are reconciled into Kubernetes by ArgoCD."]
+    ["argocd","kubernetes","ArgoCD reconciles the complete Kubernetes environment from the versioned deployment configuration."]
   ]
 };
+
+// A virtual target aligned with ArgoCD; selecting it highlights the full boundary.
+const KUBERNETES_TARGET = { id: "kubernetes", x: 555, y: 150, w: 175, h: 505 };
+
+function layerTarget(id) {
+  return id === "kubernetes" ? KUBERNETES_TARGET : LAYER_MAP.nodes.find(node => node.id === id);
+}
 
 let activeView = "architecture";
 let activeStep = -1;
@@ -247,7 +254,7 @@ function stepSequence() {
 
 function renderLayerMap() {
   const panel = document.querySelector("#diagram-panel");
-  panel.innerHTML = `<div class="diagram-workspace"><div class="diagram-canvas-wrap"><div class="diagram-canvas diagram-canvas--platform" data-diagram-canvas><div class="platform-boundary"><span>Kubernetes</span><small>Auth middleware</small></div><svg viewBox="0 0 ${LAYER_MAP.width} ${LAYER_MAP.height}" aria-hidden="true"><defs><marker id="arrowhead" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#5A4A42"></path></marker></defs>${LAYER_MAP.edges.map((edge, index) => { const from = LAYER_MAP.nodes.find(node => node.id === edge[0]), to = LAYER_MAP.nodes.find(node => node.id === edge[1]); return `<path class="diagram-path${edge[2] === "dashed" ? " is-dashed" : ""}" data-edge="${index}" d="${edgePath(from, to)}"></path>`; }).join("")}</svg>${LAYER_MAP.nodes.map(node => `<button class="diagram-node" type="button" data-node="${node.id}" data-tone="${node.tone}" style="left:${node.x}px;top:${node.y}px;width:${node.w}px;min-height:${node.h || 78}px"><span class="diagram-node__name">${node.name}</span><span class="diagram-node__sub">${node.sub}</span></button>`).join("")}</div></div><aside class="diagram-inspector" data-diagram-inspector aria-live="polite"></aside></div>`;
+  panel.innerHTML = `<div class="diagram-workspace"><div class="diagram-canvas-wrap"><div class="diagram-canvas diagram-canvas--platform" data-diagram-canvas><div class="platform-boundary" data-kubernetes-boundary><span>Kubernetes</span><small>Auth middleware</small></div><svg viewBox="0 0 ${LAYER_MAP.width} ${LAYER_MAP.height}" aria-hidden="true"><defs><marker id="arrowhead" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#5A4A42"></path></marker></defs>${LAYER_MAP.edges.map((edge, index) => { const from = layerTarget(edge[0]), to = layerTarget(edge[1]); return `<path class="diagram-path${edge[2] === "dashed" ? " is-dashed" : ""}" data-edge="${index}" d="${edgePath(from, to)}"></path>`; }).join("")}</svg>${LAYER_MAP.nodes.map(node => `<button class="diagram-node" type="button" data-node="${node.id}" data-tone="${node.tone}" style="left:${node.x}px;top:${node.y}px;width:${node.w}px;min-height:${node.h || 78}px"><span class="diagram-node__name">${node.name}</span><span class="diagram-node__sub">${node.sub}</span></button>`).join("")}</div></div><aside class="diagram-inspector" data-diagram-inspector aria-live="polite"></aside></div>`;
   panel.querySelectorAll("[data-node]").forEach(button => button.addEventListener("click", () => selectNode(button.dataset.node)));
   renderInspector();
   document.querySelector("[data-diagram-help]").textContent = "Select a component for context, or walk the system path. Scroll horizontally on smaller screens to inspect the complete platform.";
@@ -266,6 +273,7 @@ function selectNode(id) {
   const node = LAYER_MAP.nodes.find(item => item.id === id);
   document.querySelectorAll(".diagram-node").forEach(el => el.classList.toggle("is-active", el.dataset.node === id));
   document.querySelectorAll(".diagram-path").forEach((path, index) => path.classList.toggle("is-active", LAYER_MAP.edges[index].slice(0, 2).includes(id)));
+  document.querySelector("[data-kubernetes-boundary]")?.classList.toggle("is-active", id === "argocd");
   renderInspector(node);
 }
 
@@ -274,6 +282,7 @@ function stepDiagram() {
   const [from, to, copyText] = LAYER_MAP.steps[activeStep];
   document.querySelectorAll(".diagram-node").forEach(node => node.classList.toggle("is-active", node.dataset.node === from || node.dataset.node === to));
   document.querySelectorAll(".diagram-path").forEach((path, index) => { const edge = LAYER_MAP.edges[index]; path.classList.toggle("is-active", edge[0] === from && edge[1] === to); });
+  document.querySelector("[data-kubernetes-boundary]")?.classList.toggle("is-active", to === "kubernetes");
   const copy = document.querySelector("[data-step-copy]"); copy.hidden = false; copy.innerHTML = `<strong>Step ${activeStep + 1} of ${LAYER_MAP.steps.length}</strong><span>${copyText}</span>`;
 }
 
