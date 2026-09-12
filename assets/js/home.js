@@ -57,28 +57,25 @@ const BACKGROUND = [
 
 const PROJECTS = [
   {
-    color: "blue", icon: "bot", company: "o9 Solutions",
-    title: "Enterprise Agent Harness",
-    body: "Redesigned o9's agent harness to support consistent long-running and complex execution flows, plus the connectors and triggers ecosystem that lets agents ingest live data and reach third-party databases.",
-    tags: ["Agentic AI", "LLMOps", "Model Context Protocol"]
+    color: "blue", icon: "layers", label: "Architecture guide · Legacy modernization",
+    title: "Building an AI Layer on a Legacy Platform",
+    body: "A practical blueprint for adding a scalable AI control plane without forcing established systems, teams, or release cycles to move in lockstep.",
+    tags: ["Enterprise AI", "Architecture", "Agentic systems"],
+    href: "building-ai-layer.html"
   },
   {
-    color: "lavender", icon: "layers", company: "MathCo",
-    title: "AskNucliOS",
-    body: "A full-stack, no-code AI innovation platform covering LLM training and deployment, data prep, tool orchestration and monitoring — cutting GenAI project development time by 95% and powering 50+ applications.",
-    tags: ["Generative AI", "Transformers", "Product Development"]
+    color: "lavender", icon: "spark", label: "Architecture guide · Greenfield systems",
+    title: "Building an AI-Native Platform From Scratch",
+    body: "An interactive playbook for the open decisions behind a greenfield platform—from data and model routing to orchestration, security, evaluation, and deployment.",
+    tags: ["AI-native", "Architecture", "Interactive guide"],
+    href: "building-ai-native-platform.html"
   },
   {
-    color: "aqua", icon: "chart", company: "MathCo",
-    title: "AI Storyboards & AI-for-BI",
-    body: "Chat-driven analytics: onboard data, generate and edit dashboard screens, request insights, and compose shareable data stories with AI-generated summaries tuned by tone, complexity and length.",
-    tags: ["Generative AI", "UIX", "Product Research"]
-  },
-  {
-    color: "pink", icon: "gear", company: "MathCo",
-    title: "Complete Automated Time-Series (CATS)",
-    body: "A demand-forecasting and simulation platform for domains with thousands of SKUs, delivering daily predictions for 30,000 SKUs and deployed across retail, CPG and automotive engagements.",
-    tags: ["Model Training", "DevOps", "A/B Testing"]
+    color: "aqua", icon: "gear", label: "Production guide · Agent systems",
+    title: "Building the Enterprise Agent Harness",
+    body: "A production blueprint for the memory, skills, protocols, policy, orchestration, observability, and evaluation that make enterprise agents dependable.",
+    tags: ["Agent harnesses", "Enterprise AI", "Production systems"],
+    href: "building-enterprise-agent-harness.html"
   }
 ];
 
@@ -128,13 +125,13 @@ function renderPage() {
     </article>`).join("");
 
   document.getElementById("project-cards").innerHTML = PROJECTS.map((p, i) => `
-    <a class="proj reveal ${i % 2 ? "reveal--right" : "reveal--left"}" href="projects.html">
+    <a class="proj reveal ${i % 2 ? "reveal--right" : "reveal--left"}" href="${p.href}" aria-label="Read ${p.title}">
       <div class="proj__head panel-${p.color}">
         <div class="icon-tile"><i data-icon="${p.icon}"></i></div>
         <div class="arrow-tile"><i data-icon="arrowRight" data-size="20"></i></div>
       </div>
       <div class="proj__body">
-        <p class="eyebrow mt-0" style="margin-bottom:4px">${p.company}</p>
+        <p class="eyebrow mt-0" style="margin-bottom:4px">${p.label}</p>
         <h3 class="h-3">${p.title}</h3>
         <p style="font-size:15px">${p.body}</p>
         <div class="proj__tags">${p.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>
