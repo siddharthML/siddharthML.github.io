@@ -547,6 +547,11 @@ body.article-page { background: var(--canvas-2); }
     var(--blue);
   background-size: 30px 30px;
 }
+.project-feature--native .project-feature__visual {
+  background:
+    repeating-linear-gradient(-45deg, rgba(46,36,31,.08) 0 2px, transparent 2px 28px),
+    linear-gradient(145deg, var(--lavender) 0%, #eadce8 48%, var(--pink) 100%);
+}
 .project-feature__stack { width: min(340px, 100%); }
 .project-feature__layer {
   position: relative;
