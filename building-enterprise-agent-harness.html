@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building the Enterprise Agent Harness — Siddharth Chatterjee</title>
+<meta name="description" content="Concepts, approaches, and a production blueprint for enterprise AI agent harnesses.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/ai-layer.css?v=3">
+<link rel="stylesheet" href="assets/css/agent-harness.css">
+</head>
+<body id="top" class="article-page harness-page">
+<div data-nav></div>
+<main id="main">
+  <header class="article-hero harness-hero">
+    <div class="wrap article-hero__inner">
+      <div>
+        <a class="back-link" href="projects.html"><i data-icon="arrowLeft" data-size="18"></i> All projects</a>
+        <span class="article-kicker reveal"><i data-icon="gear" data-size="18"></i> Building Enterprise AI Platforms</span>
+        <h1 class="article-title reveal">Building the Enterprise Agent Harness</h1>
+        <p class="article-deck reveal">Concepts, approaches, and the blueprint for production AI agents.</p>
+      </div>
+      <aside class="article-hero__aside reveal reveal--right">
+        <p class="eyebrow">The central argument</p>
+        <p class="lead" style="color:var(--ink);margin-bottom:0">The harness—not just the model—determines whether an agent becomes reliable, governable and useful in production.</p>
+        <dl class="article-meta"><div><dt>Core concepts</dt><dd>3 dimensions</dd></div><div><dt>Approaches</dt><dd>4 philosophies</dd></div><div><dt>Blueprint</dt><dd>7 layers</dd></div><div><dt>Focus</dt><dd>Production agents</dd></div></dl>
+      </aside>
+    </div>
+  </header>
+
+  <div class="wrap article-layout">
+    <aside class="article-toc" aria-label="Article contents">
+      <p class="article-toc__label">Contents</p><div class="article-toc__progress" aria-hidden="true"><span></span></div>
+      <ol><li><a href="#core-concepts">Core concepts</a></li><li><a href="#externalization">Externalization</a></li><li><a href="#memory">Memory</a></li><li><a href="#skills">Skills</a></li><li><a href="#protocols">Protocols</a></li><li><a href="#unification">The harness</a></li><li><a href="#approaches">Four approaches</a></li><li><a href="#comparison">Comparison</a></li><li><a href="#platform-demo">Platform demo</a></li><li><a href="#enterprise-blueprint">Enterprise blueprint</a></li><li><a href="#layers">Harness layers</a></li><li><a href="#reinforcement">Reinforcement loop</a></li><li><a href="#checklist">Requirements checklist</a></li><li><a href="#closing">Closing perspective</a></li></ol>
+    </aside>
+
+    <article class="article-body">
+      <h2 id="core-concepts"><span class="section-no">Part 01</span>The Core Concepts That Govern Agent Harnesses</h2>
+      <h3>The quiet shift: from weights to context to harness</h3>
+      <p class="lede">The history of LLM systems is a story of progressive outward movement. Capability began in model weights, moved into prompts and retrieval, and now increasingly lives in the infrastructure around the model.</p>
+      <p>Memory stores, reusable skills, standardized protocols, sandboxes, approval gates and observability pipelines together form the agent harness. The driving logic is <em>externalization</em>. Long-term continuity, stable multi-step execution and governed interaction with external systems are hard for a language model to carry internally, so the harness moves those burdens into explicit, inspectable and reusable structures.</p>
+      <div class="pullquote reveal">Recall becomes retrieval. Improvised generation becomes guided composition. Ad hoc coordination becomes a machine-readable contract.</div>
+      <p>The practical consequence is profound: the same foundation model can behave like two different systems depending on the harness around it. Research on production coding agents suggests that changing the harness without changing the model can alter task success by as much as 2×. When reliability matters, harness engineering is the architecture.</p>
+
+      <section class="harness-stage reveal" id="externalization" aria-labelledby="externalization-title">
+        <div class="harness-stage__head"><div><p class="eyebrow">Interactive concept map</p><h2 id="externalization-title">Three dimensions of externalized capability</h2><p>Select a dimension to see what burden moves out of the model and what the harness gains in return.</p></div><span class="sticker">Explore the system</span></div>
+        <div data-externalization></div>
+      </section>
+
+      <h2 id="memory"><span class="section-no">Dimension 01</span>Memory: externalized state across time</h2>
+      <p>A bare model is stateless. Every call begins from a fresh context, so continuity must be reconstructed rather than carried forward. Mature systems externalize at least four kinds of state:</p>
+      <ul class="decision-list"><li><strong>Working state:</strong> open files, partial plans and execution checkpoints for the current task.</li><li><strong>Episodic state:</strong> prior decisions, tool calls, failures, outcomes and reflections.</li><li><strong>Semantic state:</strong> domain facts, heuristics and project conventions that outlive one episode.</li><li><strong>Personal or environmental state:</strong> stable preferences, habits and recurring constraints.</li></ul>
+      <p>Memory architecture has moved from monolithic context to retrieval stores, hierarchical memory with extraction and forgetting policies, and adaptive systems that learn retrieval and routing. The hard problem is not storage but control: making the right history legible at the right moment so limited model attention is spent on reasoning rather than remembering.</p>
+
+      <h2 id="skills"><span class="section-no">Dimension 02</span>Skills: externalized procedural expertise</h2>
+      <p>A skill is not a tool. A tool exposes an action; a skill encodes when and how to use actions to complete a meaningful class of tasks. Skills externalize operating procedures, decision heuristics and normative constraints into artifacts that can be discovered, loaded, versioned and composed.</p>
+      <div class="mechanism-grid"><div><b>Specification</b><span>Declare boundaries, preconditions and constraints.</span></div><div><b>Discovery</b><span>Match the right procedure to the current task.</span></div><div><b>Progressive disclosure</b><span>Load summaries first and full detail only when needed.</span></div><div><b>Execution binding</b><span>Connect procedures to tools, files and sub-agents at runtime.</span></div></div>
+      <p>Every execution becomes the selection and following of a pre-validated operating path rather than a fresh improvisation—which is exactly what enterprise reliability requires.</p>
+
+      <h2 id="protocols"><span class="section-no">Dimension 03</span>Protocols: externalized interaction structure</h2>
+      <p>Interactions with tools, agents and users should not be left to free-form prompting. Protocols move invocation grammar, argument schemas, lifecycle semantics, permission boundaries and discovery metadata into machine-readable form.</p>
+      <ul class="decision-list"><li><strong>Interoperability:</strong> tools and agents compose across vendors.</li><li><strong>Governability:</strong> permissions and audit attach to structured interfaces.</li><li><strong>Portability:</strong> models and runtime components can change without rewiring everything.</li></ul>
+
+      <h2 id="unification"><span class="section-no">The unifying layer</span>The harness as a cognitive environment</h2>
+      <p>Memory, skills and protocols are the raw materials of externalized cognition. The harness makes them cohere through six recurring design dimensions:</p>
+      <div class="dimension-grid"><article><b>Control flow</b><span>Perceive, retrieve, plan, act and observe—with explicit limits.</span></article><article><b>Sandboxing</b><span>Bound reads, writes and execution; make failures recoverable.</span></article><article><b>Human oversight</b><span>Approval gates and escalation triggered by actual risk.</span></article><article><b>Observability</b><span>Structured traces and metrics for debugging and audit.</span></article><article><b>Policy</b><span>Layered user, project and organization rules enforced at runtime.</span></article><article><b>Context budgets</b><span>Allocate finite attention across history, memory, skills and tools.</span></article></div>
+      <p>None is intelligence by itself. Together they form the environment that determines what an agent can know, remember and do.</p>
+
+      <div class="article-divider"></div>
+      <h2 id="approaches"><span class="section-no">Part 02</span>Four Architectural Philosophies</h2>
+      <p class="lede">Production harnesses cluster around four bets: engineering depth inside one box, hard safety rails, extensible minimalism, or batteries-included completeness.</p>
+      <section class="approach-explorer reveal" aria-label="Interactive harness approach comparison"><div data-approaches></div></section>
+
+      <h3>OpenCode — engineering depth</h3>
+      <p><strong>TypeScript / Bun · MIT · approximately 157k stars.</strong> OpenCode concentrates mature engineering in one terminal-first harness: overflow-aware compaction, output reservation, tree-sitter command analysis, five-tier configuration merging, typed tools and plugin hooks. Provider breadth is narrower, human pause/resume is coarse, and day-two operations stop at logs plus optional telemetry. It fits teams that want to inherit a deeply engineered single-box implementation.</p>
+
+      <h3>Claw-Code — hard safety rails</h3>
+      <p><strong>Rust · license unspecified · approximately 191k stars.</strong> Claw-Code makes safety structural. Linux namespaces isolate user, mount, IPC, PID, UTS and network access; hard iteration caps and panic-catching terminate runaway loops; lazy tool loading and sub-agent allowlists enforce least privilege. License ambiguity, partial hardening, missing cost telemetry and a steeper Rust talent requirement are material adoption constraints.</p>
+
+      <h3>Pi — minimal core, maximum extensibility</h3>
+      <p><strong>TypeScript / Bun · MIT · approximately 47k stars.</strong> Pi keeps the loop small and makes advanced behavior composable. It supports more than thirty-five providers, twenty-plus lifecycle hooks, tree-structured sessions and pluggable SSH, Docker or managed execution backends. Multi-agent behavior, MCP, plan mode, language-server integration and loop safety must be sourced or built; skills are stronger at discovery than execution.</p>
+
+      <h3>DeepAgents — batteries included</h3>
+      <p><strong>Python / LangGraph · MIT · approximately 22k stars.</strong> DeepAgents ships graph orchestration, native freeze/resume, memory, sub-agents, progressive skill disclosure, model profiles, tracing, evaluation, IDE integration and remote sandboxes as first-class features. Permissions outside the filesystem remain less granular, shell safety is backend-dependent, failure-count circuit breaking needs an additional layer, and adopters inherit framework churn.</p>
+
+      <h2 id="comparison"><span class="section-no">Evidence matrix</span>Side-by-side comparison</h2>
+      <p>Select a comparison lens. Each table keeps the distinctions that matter when choosing a starting point.</p>
+      <section class="comparison-explorer reveal"><div data-comparison></div></section>
+
+      <h3>What the comparison teaches</h3>
+      <ul class="decision-list"><li><strong>Depth over breadth:</strong> choose the engineering-depth approach when you want to inherit a mature terminal-first system.</li><li><strong>Safety by construction:</strong> choose the safety-first approach when hard isolation outweighs license and staffing constraints.</li><li><strong>Extensibility over completeness:</strong> choose the minimal core when the harness itself is a platform your organization wants to own.</li><li><strong>Completeness over minimalism:</strong> choose batteries-included when oversight, observability, evaluation and provider choice must work from day one.</li></ul>
+      <p>Most enterprises will converge on a hybrid: the safety-first approach’s loop discipline, the batteries-included approach’s skill disclosure, and the extensible approach’s provider abstraction.</p>
+
+      <section class="harness-video reveal" id="platform-demo" aria-labelledby="harness-demo-title">
+        <div><p class="eyebrow">Harness in practice</p><h2 id="harness-demo-title">See the agent experience in motion</h2><p>This product walkthrough provides a concrete view of the assistant and configuration surface that a production harness must support behind the scenes.</p></div>
+        <div class="harness-video__frame"><iframe src="https://drive.google.com/file/d/1HXwvcHpa4JLX81BPhgvR-2lBweWFs2RS/preview" title="Enterprise agent harness product demonstration" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe></div>
+        <a href="https://drive.google.com/file/d/1HXwvcHpa4JLX81BPhgvR-2lBweWFs2RS/view?usp=sharing" target="_blank" rel="noopener noreferrer">Open video in Google Drive <i data-icon="external" data-size="16"></i></a>
+      </section>
+
+      <div class="article-divider"></div>
+      <h2 id="enterprise-blueprint"><span class="section-no">Part 03</span>What an Enterprise Agent Harness Looks Like</h2>
+      <p class="lede">A developer agent has one user, one machine and one risk appetite. An enterprise platform has thousands of users, shared data, many workloads, compliance obligations and a hard requirement that every action be explainable afterward.</p>
+      <p>In that environment, the harness is the operating system that makes model-based reasoning usable, controllable, repeatable and accountable. Explore the production blueprint and its two-speed operating model below.</p>
+      <section class="blueprint-stage reveal" aria-label="Interactive enterprise harness blueprint"><div data-blueprint></div></section>
+
+      <div class="principle-grid"><article><span>01</span><h3>Identity is the boundary</h3><p>Every run establishes organization, user, conversation, agent configuration, model, data, tools, permissions and approval rules. Two users may ask the same question and correctly receive different answers.</p></article><article><span>02</span><h3>State is explicit, not prose</h3><p>Messages, files, citations, tasks, tool results, approvals, artifacts and delegation status live in structured fields, making runs validatable and resumable.</p></article><article><span>03</span><h3>Externalization organizes the system</h3><p>The model keeps interpretation, synthesis and adaptation. Mutable, reusable, inspectable and enforceable state lives outside it.</p></article><article><span>04</span><h3>The loops are two-speed</h3><p>A fast operational loop executes work inside a slower governed loop that tests, reviews, releases and rolls back improvements.</p></article></div>
+
+      <h2 id="layers"><span class="section-no">Production blueprint</span>The layers of an enterprise harness</h2>
+      <h3>Identity and operating context</h3>
+      <ul class="decision-list"><li>Carry authenticated user and organization context on every run.</li><li>Assign agent capabilities explicitly; never make them globally available.</li><li>Apply the same isolation boundary to data, memory, files, caches, tools and logs.</li></ul>
+      <h3>Memory as managed continuity</h3>
+      <ul class="decision-list"><li>Separate working, episodic, organizational and personal memory by owner, lifespan and policy.</li><li>Retrieve selectively with provenance instead of loading the whole archive.</li><li>Define retention, correction, deletion and conflict-resolution rules.</li><li>Record who created each memory, what supports it, who may retrieve it, when it expires, and whether it was stated or inferred.</li></ul>
+      <h3>Skills as governed operational knowledge</h3>
+      <ul class="decision-list"><li>Make procedures discoverable, versioned and explicit about tool and file dependencies.</li><li>Keep only a small catalog in context; load full instructions when a task matches.</li><li>Require validation and regression evidence before publication, with rollback available.</li><li>Let traces propose improvements, but never publish a procedure without review.</li></ul>
+      <h3>Filesystem as external working memory</h3>
+      <ul class="decision-list"><li>Use a bounded task workspace; path resolution fails closed.</li><li>Separate inputs and outputs, prevent accidental overwrite, and search large collections before loading them.</li><li>Persist artifacts with provenance, conversion history and sensitivity labels.</li><li>Treat stored content as data, never as instructions: path safety does not imply content trust.</li></ul>
+      <h3>Tools, delegation and protocols</h3>
+      <ul class="decision-list"><li>Validate machine-readable tool inputs and return structured outputs with platform-managed authentication.</li><li>Make side effects idempotent or status-checkable so timeouts do not duplicate actions.</li><li>Bound delegated context, depth, time, budget and capability; children do not inherit everything by default.</li><li>Use standard tool, agent-to-agent and user-interaction protocols to preserve portability.</li></ul>
+      <h3>Orchestration and control</h3>
+      <ul class="decision-list"><li>Use an explicit loop with ordered middleware: policy before execution, registration after.</li><li>Set separate limits for model calls, tools, elapsed time, context, spend and delegation depth.</li><li>Distinguish success, refusal, cancellation, timeout, denial and pending approval.</li><li>Checkpoint before pauses and multi-step work so resuming never repeats a completed side effect.</li></ul>
+      <h3>Policy and human oversight</h3>
+      <ul class="decision-list"><li>Make one central decision before every action: allow, deny, require approval, or allow with enhanced audit.</li><li>Use short-lived, narrowly scoped credentials and read-only access where possible.</li><li>Reserve approvals for consequential, hard-to-reverse actions so users do not learn to click through.</li><li>Carry data controls through memory, prompts, tools, sandboxes, files and external systems.</li></ul>
+      <h3>Observability and evaluation</h3>
+      <ul class="decision-list"><li>Reconstruct every run from model and configuration versions, tokens, tool outcomes, approvals, sources, cost, errors and trace identifiers.</li><li>Evaluate both the answer and the harness: retrieval precision, context efficiency, recovery, policy coverage, skill compatibility and cost under load.</li><li>Route proposed changes through tests, review, staged release, monitoring and rollback.</li></ul>
+
+      <h2 id="reinforcement"><span class="section-no">System dynamics</span>How the layers reinforce one another</h2>
+      <p>A reliable harness is a network of feedback relationships rather than a stack of isolated services. Select a relationship to follow how evidence becomes safer capability.</p>
+      <section class="reinforcement-stage reveal"><div data-reinforcement></div></section>
+
+      <h2 id="checklist"><span class="section-no">Production gate</span>The enterprise requirements checklist</h2>
+      <p>A production-grade harness should be able to answer yes to every item. Use this checklist as a lightweight architecture review.</p>
+      <div class="harness-checklist" data-checklist>
+        <label><input type="checkbox">Every run carries authenticated user and organization context across every surface.</label>
+        <label><input type="checkbox">Working, episodic, organizational and personal memory are separated, governed and provenance-tracked.</label>
+        <label><input type="checkbox">Each task has a bounded workspace with separated inputs and outputs plus persistent artifacts.</label>
+        <label><input type="checkbox">Procedures are explicit, discoverable, versioned and validated before publication.</label>
+        <label><input type="checkbox">Tool and delegation interfaces are structured, authenticated and safe to retry.</label>
+        <label><input type="checkbox">A central policy decision precedes every consequential action and approvals are auditable.</label>
+        <label><input type="checkbox">Model calls, tools, time, context, spend and delegation have limits; resumes do not repeat side effects.</label>
+        <label><input type="checkbox">Runs are reconstructable; outputs and harness behavior are evaluated; changes are staged and reversible.</label>
+        <div class="checklist-score"><b data-check-count>0</b><span>of 8 production requirements evidenced</span></div>
+      </div>
+
+      <h2 id="closing"><span class="section-no">Closing perspective</span>Build the environment, not only the reasoner</h2>
+      <p>The capabilities cannot be designed in isolation. Memory affects context. Skills determine tool use. Tools create artifacts and side effects. Policy governs those actions. Observability records them. Evaluation turns the records into evidence for improvement.</p>
+      <p>An enterprise harness turns a general-purpose model into a governed participant in real work. Remembering becomes retrieving; handling documents becomes working in a bounded workspace; knowing a process becomes loading a procedure; calling a system becomes filling a validated interface; taking a consequential action becomes a policy decision; pausing becomes a recoverable checkpoint; and debugging becomes inspection of evidence.</p>
+      <div class="pullquote reveal">Stop asking “which model should we use?” first. Ask: “what environment have we built for the model to operate in?”</div>
+      <p>Better agents are not merely better reasoners. They are better organized cognitive systems.</p>
+      <div class="source-note"><b>References and sources</b><span>“Externalization in LLM Agents: A Unified Review of Memory, Skills, Protocols and Harness Engineering” (arXiv:2604.08224, 2026); “Architectural Design Decisions in AI Agent Harnesses” (arXiv:2604.18071, 2026); comparative harness audits of OpenCode, Claw-Code, Pi and DeepAgents (2026); vendor-neutral enterprise harness architecture guidance (2026).</span></div>
+    </article>
+  </div>
+</main>
+<div data-contact></div><div data-footer></div>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/agent-harness.js"></script>
+</body>
+</html>
