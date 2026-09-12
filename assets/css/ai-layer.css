@@ -211,7 +211,10 @@ body.article-page { background: var(--canvas-2); }
 }
 
 .architecture-stage {
-  width: min(1160px, calc(100vw - 430px));
+  /* The stage starts in the article column, well to the right of the viewport
+     edge. Size it from the space that is actually available on that side so
+     the inspector and controls never disappear behind the viewport. */
+  width: min(1160px, calc(50vw + 179px));
   margin: 86px 0 96px;
   border: var(--border);
   box-shadow: var(--shadow-lg);
@@ -591,7 +594,7 @@ body.article-page { background: var(--canvas-2); }
   .article-layout { padding-block: 42px 72px; }
   .article-toc ol { grid-template-columns: 1fr 1fr; }
   .article-body .pullquote { margin-inline: 0; padding: 24px; }
-  .architecture-stage { width: calc(100vw - 18px); box-shadow: 5px 5px 0 var(--ink); }
+  .architecture-stage { width: 100%; box-shadow: 5px 5px 0 var(--ink); }
   .architecture-stage__head { display: block; padding: 22px; }
   .diagram-canvas-wrap { padding: 15px; }
   .diagram-canvas { min-width: 820px; }
