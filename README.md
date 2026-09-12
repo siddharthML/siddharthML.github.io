@@ -20,7 +20,8 @@ Then open <http://localhost:8000>.
 ```
 index.html          Home
 about.html          About — bio, skills, credentials, career accordion
-projects.html       Projects (placeholder — case studies pending)
+projects.html       Projects index
+building-ai-layer.html  Interactive enterprise AI architecture article
 publications.html   Papers, awards, writing & talks
 bookshelf.html      The PM reading list
 
@@ -28,9 +29,11 @@ assets/css/style.css   The whole design system: tokens, components, animation
 assets/js/site.js      Nav, contact section, footer, icons, scroll reveal
 assets/js/home.js      Homepage content (focus cards, projects, metrics)
 assets/js/bookshelf.js Bookshelf rendering
+assets/js/ai-layer.js  Interactive architecture explorer
 assets/js/data.js      Book list — single source of truth
 assets/covers/         Book cover images
 assets/img/            Put portrait.jpg here to replace the monogram in the hero
+assets/css/ai-layer.css Article and interactive diagram styles
 
 assets/logos/          Client brand logos for the "Clients I've Worked With" band
 assets/Siddharth-Chatterjee-CV.pdf   Linked from the nav CV tab and the CV card
@@ -72,9 +75,8 @@ typographic cover automatically, which is a legitimate look here — not a bug.
 hero and About page pick it up automatically. Portrait orientation (roughly
 4:5) works best.
 
-**Add a real project case study** — the projects page currently reuses the
-`PROJECTS` array from `home.js`. When you write a real case study, create
-`project-<name>.html` and point the card's `href` at it.
+**Add another project article** — add its card to `projects.html`, create a
+standalone article page, and reuse the shared navigation/footer from `site.js`.
 
 ## Design system
 

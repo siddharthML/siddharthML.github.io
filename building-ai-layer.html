@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building an AI Layer on a Legacy Platform — Siddharth Chatterjee</title>
+<meta name="description" content="An architecture playbook for adding AI capability to an existing platform across the eleven decisions that matter most.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/ai-layer.css">
+</head>
+<body id="top" class="article-page">
+<div data-nav></div>
+<main id="main">
+  <header class="article-hero">
+    <div class="wrap article-hero__inner">
+      <div>
+        <a class="back-link" href="projects.html"><i data-icon="arrowLeft" data-size="18"></i> All projects</a>
+        <span class="article-kicker reveal"><i data-icon="layers" data-size="18"></i> Building Enterprise AI Platforms</span>
+        <h1 class="article-title reveal">Building an AI Layer on a Legacy Platform</h1>
+        <p class="article-deck reveal">An architecture playbook for adding AI capability on top of an existing system, across the eleven decisions that matter most.</p>
+      </div>
+      <aside class="article-hero__aside reveal reveal--right">
+        <p class="eyebrow">The central constraint</p>
+        <p class="lead" style="color:var(--ink);margin-bottom:0">Build a new AI control plane that can evolve, scale and fail independently—without forcing the legacy platform or its teams to move in lockstep.</p>
+        <dl class="article-meta">
+          <div><dt>Decisions</dt><dd>11 layers</dd></div><div><dt>System views</dt><dd>5 interactive</dd></div>
+          <div><dt>Focus</dt><dd>Enterprise AI</dd></div><div><dt>Format</dt><dd>Architecture guide</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </header>
+
+  <div class="wrap article-layout">
+    <aside class="article-toc" aria-label="Article contents">
+      <p class="article-toc__label">Contents</p><div class="article-toc__progress" aria-hidden="true"><span></span></div>
+      <ol>
+        <li><a href="#different-problem">A different problem</a></li><li><a href="#architecture-explorer">Architecture explorer</a></li>
+        <li><a href="#raw-data">Raw data</a></li><li><a href="#clean-data">Clean data</a></li><li><a href="#model-hosting">Model hosting</a></li>
+        <li><a href="#agent-harness">Agent harness</a></li><li><a href="#harness-database">Harness database</a></li><li><a href="#serving-apps">Serving apps</a></li>
+        <li><a href="#auth-layer">Auth layer</a></li><li><a href="#monitoring-layer">Monitoring</a></li><li><a href="#security-layer">Security</a></li>
+        <li><a href="#testing-layer">Testing</a></li><li><a href="#deployment">Deployment</a></li><li><a href="#pieces-fit">How it fits together</a></li>
+      </ol>
+    </aside>
+
+    <article class="article-body">
+      <p class="lede" id="different-problem">Most public discussion of AI architecture assumes a blank canvas: a new product, a new data model, and a team free to pick the best tool for every layer without history to account for. That is useful, but it describes a minority of the AI projects happening inside established companies.</p>
+      <p>The more common situation is an organization with a mature platform, years of data, existing users, integrations and operational habits that now needs to add AI capability without breaking any of them.</p>
+      <div class="pullquote reveal">Building AI on top of a legacy platform is not a smaller version of building AI-native. It is a different problem with a different success criterion.</div>
+      <p>AI-native teams optimize for the best possible architecture for AI workloads. Legacy-plus-AI teams optimize for the best architecture that can be added without a multi-year rewrite, without disrupting an existing user base, and without asking every team that owns a piece of the legacy stack to change how they work. That constraint shapes almost every decision below.</p>
+      <p>The eleven decisions run from where data comes from, to how models are hosted, to how the whole system is tested and deployed. Technology names are illustrative: they are real open-source and commercial building blocks commonly found in this kind of stack, not a description of any single company’s implementation.</p>
+
+      <section class="architecture-stage reveal" id="architecture-explorer" aria-labelledby="architecture-title">
+        <div class="architecture-stage__head"><div><p class="eyebrow">Interactive system map</p><h2 id="architecture-title">Explore the architecture from five angles</h2><p>Switch views, select components for context, or walk each flow step by step. The same system is shown as a layer map, request workflow, call sequence, data flow and turn lifecycle.</p></div><span class="sticker">Click any node</span></div>
+        <div data-architecture-explorer></div>
+      </section>
+
+      <h2 id="raw-data"><span class="section-no">Decision 01</span>Raw Data</h2>
+      <p>In a legacy environment, raw data almost never starts clean. It has accumulated across relational databases, batch-loaded warehouses, flat-file drops and departmental spreadsheets that never reached a central system. Treating all of this as a data-quality problem that must be fixed before AI can begin usually stalls the work for months.</p>
+      <p>A more workable approach treats the raw layer as a fixed constraint rather than a renovation target. A thin ingestion layer sits beside the legacy stores. Change-data-capture tools such as Debezium stream row-level changes without touching source schemas, then land the stream in an object store or a lakehouse format such as Delta Lake or Apache Iceberg. The result is versioned, queryable raw data without forcing a rigid schema on day one.</p>
+      <ul class="decision-list"><li>Choose how much history to backfill and how much to stream incrementally.</li><li>Run transformations in a shared layer such as Spark or dbt rather than inside every source.</li><li>Resolve conflicts between overlapping legacy sources automatically, not by manual reconciliation.</li></ul>
+
+      <h2 id="clean-data"><span class="section-no">Decision 02</span>Clean Data</h2>
+      <p>The clean version of the data rarely lives in one warehouse. It is more often a combination of a fast columnar store for aggregates, such as ClickHouse; DuckDB for embedded analytical queries; a search index such as OpenSearch or Elasticsearch for unstructured and semi-structured content; and curated lake tables for anything that must be queried at scale or replayed.</p>
+      <p>The consequential choice is whether the AI layer talks directly to those stores or through a semantic layer. Direct access is quicker to build, but it couples every agent and tool to the internal shape of legacy systems. A semantic layer—implemented as a metrics layer such as dbt Semantic Layer or Cube, or as a thin internal API—takes longer to establish but isolates downstream systems from later storage changes.</p>
+      <p>The pragmatic middle ground is a clean interface defined by business concepts—a customer, an order, a plan, a document—rather than table names, with adapters underneath that map those concepts to the storage technology already in place.</p>
+
+      <h2 id="model-hosting"><span class="section-no">Decision 03</span>Model Hosting</h2>
+      <p>Legacy platforms rarely host their own foundation models, and there is little reason to start. A more durable pattern treats model access as interchangeable endpoints hosted by cloud infrastructure providers such as Azure OpenAI, AWS Bedrock and Google Vertex AI, or directly by model providers such as OpenAI and Anthropic.</p>
+      <p>Those endpoints sit behind a thin routing and caching layer rather than being called from application code. This matters because many independent teams and applications will eventually need models. Without a shared gateway, each codebase grows its own provider choice, retry logic, caching and cost accounting.</p>
+      <p>An AI gateway such as LiteLLM or Portkey can centralize routing, provider fallback, response caching and per-tenant usage accounting. It becomes the place to change models later without touching every downstream consumer.</p>
+
+      <h2 id="agent-harness"><span class="section-no">Decision 04</span>Agent Harness</h2>
+      <p>The agent harness is the orchestration brain. It decides what an agent does step by step, what it remembers, which tools it can reach, and how it talks to the rest of the platform. On a legacy platform, this harness is best built as a genuinely new service rather than attached to application logic designed for deterministic, human-triggered workflows.</p>
+      <ul class="decision-list"><li>A graph-based engine such as LangGraph makes reasoning and tool calls an explicit state machine rather than one long prompt.</li><li>Context compaction and response caching keep long conversations within model context limits.</li><li>Tiered memory can split fast session state in Redis from longer-lived user, organization and project memory.</li><li>Reusable, instruction-based capabilities let agents invoke common behavior consistently.</li><li>A locked-down container or microVM such as gVisor or Firecracker isolates code execution.</li><li>Open protocols such as MCP standardize access to third-party systems instead of creating one-off integrations.</li></ul>
+      <p>The legacy-specific difficulty is integration surface area. The harness needs adapters for the authentication, data access and business-logic APIs the existing platform already exposes, which is usually the largest and messiest part of the work.</p>
+
+      <h2 id="harness-database"><span class="section-no">Decision 05</span>Database Supporting the Agent Harness</h2>
+      <p>Reusing the legacy databases for agent state, conversations, tool-call logs, configuration and memory is tempting, but agent workloads have different access patterns: high write volume, short-lived records and graph-like relationships between memory and context. Mixing them with core transactional or analytical workloads creates operational risk for both.</p>
+      <p>A cleaner pattern is a small purpose-built set of stores: PostgreSQL for structured configuration and ingestion metadata, a document store such as MongoDB for conversation history and logs, and a graph database such as Neo4j or FalkorDB for relationships among systems, agents and tools. Separation lets the AI layer evolve, scale and fail independently without threatening systems of record.</p>
+
+      <h2 id="serving-apps"><span class="section-no">Decision 06</span>Serving Apps</h2>
+      <p>The serving layer exposes the AI capability to people and other systems. A lightweight asynchronous framework such as FastAPI handles the long-lived streaming connections used by agent responses better than a traditional synchronous web framework.</p>
+      <p>The key decision is whether the AI layer gets its own front door or is folded into the legacy application’s serving layer. A separate, versioned API using server-sent events or WebSockets can be deployed independently, then embedded into existing user interfaces through lightweight integration rather than a full front-end rewrite. The AI layer can ship on its own cadence without forcing a synchronized release train.</p>
+
+      <h2 id="auth-layer"><span class="section-no">Decision 07</span>Auth Layer</h2>
+      <p>Identity is one area where reuse is usually correct. A second identity system creates dual login experiences and a second source of truth for access. The stronger pattern is federation: keep the legacy identity provider authoritative, use OAuth 2.0 or OpenID Connect for delegated authorization, then map existing tenant and user roles into role-based access control for the AI layer.</p>
+      <p>Agents add a second dimension. The authorization model must reason about both who is asking and what the agent may touch on that person’s behalf. Legacy role systems were rarely designed for delegated agent authority, so this is usually an extension rather than a direct reuse.</p>
+
+      <h2 id="monitoring-layer"><span class="section-no">Decision 08</span>Monitoring Layer</h2>
+      <p>AI observability must answer questions legacy monitoring was not built to ask: what did an agent decide, why, which tools did it use, and what did the run cost? Dedicated LLM tracing—through Langfuse or an OpenTelemetry-based pipeline—belongs alongside existing infrastructure and application monitoring.</p>
+      <ul class="decision-list"><li>Trace-level visibility into agent steps and tool calls.</li><li>Usage and cost accounting per user and tenant.</li><li>Infrastructure metrics and dashboards through Prometheus, Grafana and OpenTelemetry.</li></ul>
+      <p>Emitting through a standard such as OpenTelemetry lets the AI layer’s operational data flow into the monitoring stack the existing operations team already trusts.</p>
+
+      <h2 id="security-layer"><span class="section-no">Decision 09</span>Security Layer</h2>
+      <p>The AI layer has to cover both traditional application security and agent-specific risks: prompt injection, unsafe tool invocation and code executed inside a sandbox. The model gateway is the natural enforcement point for input and output filtering, guardrails and provider-level safety controls.</p>
+      <p>System instructions should constrain agent behavior; automated static analysis such as Semgrep or Snyk should inspect generated or executed code; and hardened, minimal base images should limit the sandbox. This does not replace the legacy platform’s security posture. It extends it to an attack surface that did not exist before agents were introduced.</p>
+
+      <h2 id="testing-layer"><span class="section-no">Decision 10</span>Testing Layer</h2>
+      <p>Traditional CI/CD validates deterministic code: the same input should produce the same output. Agents can produce different but equally valid responses, so conventional assertion-based testing is insufficient.</p>
+      <p>Two tracks need to run together. Standard unit, integration and end-to-end tests cover deterministic components. An evaluation framework uses model-based or rubric-based scoring against a curated scenario set to evaluate agent and tool behavior continuously. Existing pipelines in Azure DevOps, Jenkins or GitHub Actions can usually be extended rather than replaced.</p>
+      <p>The evaluation harness should live beside tracing. That way a regression caught by an automated evaluation and one reported by a user can be debugged from the same run data.</p>
+
+      <h2 id="deployment"><span class="section-no">Decision 11</span>Deployment</h2>
+      <p>Agent runtimes, tool workloads, sandboxes and connector servers have different resource and scaling profiles. Deploying them inside the legacy application creates noisy-neighbor risk: a runaway sandbox process should never degrade the core service.</p>
+      <p>Separate Kubernetes namespaces or node pools can isolate the agent and tool layer, standardized connector servers, and sandboxed or heavy compute execution. Each can be deployed independently from the legacy platform’s release pipeline. This is what makes “a layer on top” real in production: the AI layer can be scaled, redeployed or rolled back without touching the system underneath it.</p>
+
+      <div class="article-divider"></div>
+      <h2 id="pieces-fit"><span class="section-no">Five coherent views</span>How the Pieces Fit Together</h2>
+      <p class="lede">A list of good individual choices is not yet a coherent system. The architecture must hold up when viewed through structure, workflow, call order, data movement and state.</p>
+      <div class="lens-grid"><div class="lens-card"><b>Static architecture</b><span>What exists and where the boundaries sit.</span></div><div class="lens-card"><b>Workflow</b><span>What order a request follows from intake to completion.</span></div><div class="lens-card"><b>Sequence</b><span>Which component calls which, and what stays asynchronous.</span></div><div class="lens-card"><b>Data flow</b><span>Where knowledge and configuration originate, move and land.</span></div><div class="lens-card"><b>Lifecycle</b><span>What state a turn occupies, including interruption and recovery.</span></div></div>
+      <h3>Workflow view</h3><p>A prompt moves through three phases. Intake authenticates against the legacy identity provider and resolves tenant context. Context and execution load conversation and retrieval state, then alternate between model reasoning and tool calls across internal systems, external connectors or a sandbox. Completion streams the response while a background job persists the turn and summarizes it for the next compact context window.</p>
+      <h3>Sequence view</h3><p>The API loads thread and tenant configuration before handing off to orchestration. The engine and model exchange messages in a loop: the model asks for a tool, the engine executes it with scoped context, and the structured result becomes the next model input. The final response streams immediately; message persistence and queued summarization happen after the user already has the answer, keeping bookkeeping off the critical path.</p>
+      <h3>Data flow view</h3><p>Knowledge and configuration move through parallel asynchronous paths. Documents become ingestion jobs, then chunks and embeddings in a vector-capable store. Tenant configuration becomes normalized entities in a graph store. Retrieval joins semantic and graph context at query time. Pipeline-run history follows a third operational path so status reporting never becomes entangled with knowledge retrieval.</p>
+      <h3>Lifecycle view</h3><p>A turn moves through accepted, prepared, executing, streaming and completed. Mutating tool calls can pause for approval, and missing information can pause for user input; both resume from checkpoints. Recoverable failures enter a bounded retry loop. Only exhausted retries or explicit cancellation produce terminal exits. Explicit state makes the system debuggable instead of leaving failure behavior to framework defaults.</p>
+
+      <div class="article-end reveal"><p class="eyebrow" style="color:var(--blue)">One system five angles</p><h2>The architecture has to survive contact with legacy constraints.</h2><p>What exists, what happens first, who calls whom, where data moves, and what state the work is in must all describe the same system. When those five views agree, the design is more than a static diagram: it is an operating model that can coexist with a mature platform.</p></div>
+    </article>
+  </div>
+</main>
+<div data-contact></div><div data-footer></div>
+<script src="assets/js/site.js"></script><script src="assets/js/ai-layer.js"></script>
+</body>
+</html>
