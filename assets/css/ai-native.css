@@ -1,4 +1,49 @@
-.native-page{overflow-x:hidden}.native-hero{background:linear-gradient(135deg,#f5ead8 0%,#f9f3e7 52%,#dcebdc 100%)}
+.native-page{overflow-x:hidden}
+.native-hero{
+  isolation:isolate;
+  background:linear-gradient(135deg,#f5ead8 0%,#f9f3e7 58%,#e5efdf 100%);
+}
+/* A modular, rising field gives this greenfield article its own visual identity. */
+.native-hero::before{
+  width:58vw;
+  height:68vh;
+  min-width:620px;
+  min-height:520px;
+  left:auto;
+  right:-5vw;
+  bottom:-8vh;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  background:
+    linear-gradient(rgba(173,216,230,.5),rgba(173,216,230,.5)) 0 100%/20% 22% no-repeat,
+    linear-gradient(rgba(191,227,223,.48),rgba(191,227,223,.48)) 20% 100%/20% 40% no-repeat,
+    linear-gradient(rgba(221,208,236,.46),rgba(221,208,236,.46)) 40% 100%/20% 58% no-repeat,
+    linear-gradient(rgba(217,160,172,.34),rgba(217,160,172,.34)) 60% 100%/20% 76% no-repeat,
+    linear-gradient(rgba(231,195,131,.34),rgba(231,195,131,.34)) 80% 100%/20% 94% no-repeat;
+  transform:skewY(-5deg);
+  transform-origin:bottom right;
+  opacity:.82;
+}
+.native-hero::after{
+  content:"";
+  position:absolute;
+  width:58vw;
+  height:68vh;
+  min-width:620px;
+  min-height:520px;
+  right:-5vw;
+  bottom:-8vh;
+  background:
+    repeating-linear-gradient(90deg,rgba(46,36,31,.14) 0 1px,transparent 1px 54px),
+    repeating-linear-gradient(0deg,rgba(46,36,31,.14) 0 1px,transparent 1px 54px);
+  border:2px solid rgba(46,36,31,.28);
+  transform:skewY(-5deg);
+  transform-origin:bottom right;
+  pointer-events:none;
+  z-index:0;
+  opacity:.65;
+}
 .native-page .architecture-stage{background:#f7f0e4}
 .decision-explorer{border:2px solid var(--ink);background:#fffdf8;box-shadow:6px 6px 0 var(--ink)}
 .decision-toolbar{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.2rem;border-bottom:2px solid var(--ink);background:#dcebdc}
@@ -13,5 +58,5 @@
 .sequence-grid{display:grid;gap:.45rem;min-width:780px}.sequence-row{display:grid;grid-template-columns:32px 155px 1fr 155px;align-items:center;gap:.5rem;padding:.45rem;border-bottom:1px solid #d9c7b6}.sequence-row b{color:var(--rust)}.sequence-row .arrow{text-align:center}.sequence-row.is-muted{opacity:.2}.sequence-row.is-active{background:#f1d7bd}.sequence-toggle{display:flex;gap:.5rem;align-items:center;margin-bottom:1rem}
 .store-compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;min-width:720px}.store-option{border:2px solid var(--ink);padding:1rem;background:#f5ead8}.store-option.is-active{background:#dcebdc;box-shadow:4px 4px 0 var(--ink)}.store-route{display:flex;align-items:stretch;gap:.5rem;margin:.8rem 0}.store-node{flex:1;border:1.5px solid var(--ink);background:#fff;padding:.65rem;text-align:center;font-size:.78rem;font-weight:700;display:grid;place-content:center}.store-route .arrow{align-self:center}.store-meta{font-size:.82rem}.store-meta b{display:block;margin-top:.4rem}
 .lifecycle{display:flex;align-items:center;gap:.7rem;min-width:820px}.life-node{border:2px solid var(--ink);background:#fff;padding:.75rem;text-align:center;font-weight:700;min-width:105px}.life-node.is-active{background:#f1b98b;box-shadow:3px 3px 0 var(--ink)}.life-arrow{font-weight:700}.evaluation-gate{background:#dcebdc}.life-outcome{display:grid;gap:.45rem}.life-outcome .life-node{font-size:.78rem;padding:.5rem}.native-status{margin-top:1rem;padding:.75rem 1rem;border-left:4px solid var(--rust);background:#f5ead8;min-height:48px}
-@media(max-width:760px){.decision-lane{grid-template-columns:1fr}.decision-detail{grid-column:1;grid-template-columns:1fr}.decision-summary ol{columns:1}.decision-toolbar{align-items:flex-start}.store-compare{grid-template-columns:1fr;min-width:0}.native-view__body{padding:1rem}.native-page .article-title{font-size:clamp(2.6rem,13vw,4.4rem)}}
+@media(max-width:760px){.native-hero::before,.native-hero::after{width:120vw;min-width:0;height:46vh;min-height:320px;right:-46vw;top:18vh;bottom:auto;opacity:.34}.decision-lane{grid-template-columns:1fr}.decision-detail{grid-column:1;grid-template-columns:1fr}.decision-summary ol{columns:1}.decision-toolbar{align-items:flex-start}.store-compare{grid-template-columns:1fr;min-width:0}.native-view__body{padding:1rem}.native-page .article-title{font-size:clamp(2.6rem,13vw,4.4rem)}}
 @media(prefers-reduced-motion:no-preference){.flow-node,.life-node,.store-option,.decision-option,.view-tab,.native-action{transition:transform .16s ease,box-shadow .16s ease,background-color .16s ease,opacity .16s ease}}
