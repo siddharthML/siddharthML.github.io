@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building an AI-Native Platform From Scratch — Siddharth Chatterjee</title>
+<meta name="description" content="An architecture playbook for the eleven open decisions behind a greenfield AI-native platform.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/ai-layer.css">
+<link rel="stylesheet" href="assets/css/ai-native.css">
+</head>
+<body id="top" class="article-page native-page">
+<div data-nav></div>
+<main id="main">
+  <header class="article-hero native-hero">
+    <div class="wrap article-hero__inner">
+      <div>
+        <a class="back-link" href="projects.html"><i data-icon="arrowLeft" data-size="18"></i> All projects</a>
+        <span class="article-kicker reveal"><i data-icon="sparkles" data-size="18"></i> Building Enterprise AI Platforms</span>
+        <h1 class="article-title reveal">Building an AI-Native Platform From Scratch</h1>
+        <p class="article-deck reveal">An architecture playbook for the eleven decisions that matter most when there are no platform priors, and no default answer is forced on you.</p>
+      </div>
+      <aside class="article-hero__aside reveal reveal--right">
+        <p class="eyebrow">The central challenge</p>
+        <p class="lead" style="color:var(--ink);margin-bottom:0">A blank canvas removes integration debt—but it also removes the constraints that would otherwise narrow the answer. Every default now deserves scrutiny.</p>
+        <dl class="article-meta"><div><dt>Decisions</dt><dd>11 open sets</dd></div><div><dt>System views</dt><dd>5 interactive</dd></div><div><dt>Focus</dt><dd>Greenfield AI</dd></div><div><dt>Format</dt><dd>Architecture guide</dd></div></dl>
+      </aside>
+    </div>
+  </header>
+
+  <div class="wrap article-layout">
+    <aside class="article-toc" aria-label="Article contents">
+      <p class="article-toc__label">Contents</p><div class="article-toc__progress" aria-hidden="true"><span></span></div>
+      <ol><li><a href="#without-priors">Without priors</a></li><li><a href="#decision-explorer">Decision explorer</a></li><li><a href="#raw-data">Raw data</a></li><li><a href="#clean-data">Clean data</a></li><li><a href="#model-hosting">Model hosting</a></li><li><a href="#agent-harness">Agent harness</a></li><li><a href="#harness-database">Harness database</a></li><li><a href="#serving-apps">Serving apps</a></li><li><a href="#auth-layer">Auth layer</a></li><li><a href="#monitoring-layer">Monitoring</a></li><li><a href="#security-layer">Security</a></li><li><a href="#testing-layer">Testing</a></li><li><a href="#deployment">Deployment</a></li><li><a href="#pieces-fit">How it fits together</a></li></ol>
+    </aside>
+
+    <article class="article-body">
+      <h2 id="without-priors"><span class="section-no">The premise</span>Why the Same Eleven Decisions Play Out Differently Without Priors</h2>
+      <p class="lede">A companion piece to this one walks through what happens when AI capability gets layered onto an existing platform: a mature system with years of data, users, integrations and operational habits that all have to keep working while AI gets added.</p>
+      <p>That situation has a dominant constraint, and it quietly narrows almost every decision before the team has started, because the safest answer is usually whatever interoperates cleanly with what already exists. Harness research shows how much this matters: the same model can perform up to twice as well simply by changing the harness around it, making architecture more consequential than model selection.</p>
+      <p>Building AI-native removes that constraint entirely. There is no installed base to avoid disrupting, no decade of schemas to work around, no existing identity system to federate with and no release train to stay synchronized with. That is not a smaller version of the legacy problem; it is a genuinely different one, and the risk it creates is different too.</p>
+      <div class="pullquote reveal">Legacy-plus-AI efforts fail when integration debt makes every decision harder than it should be. Greenfield efforts fail when freedom is mistaken for an absence of decisions.</div>
+      <p>The eleven categories remain the same because the underlying questions—where data comes from, how models are hosted, how agents are orchestrated, and how the system is secured, tested and deployed—do not change. What changes is the menu. At nearly every step there is a wider range of viable answers, and popularity alone is not a reason to choose one.</p>
+
+      <section class="architecture-stage reveal" id="decision-explorer" aria-labelledby="decision-title">
+        <div class="architecture-stage__head"><div><p class="eyebrow">Interactive decision map</p><h2 id="decision-title">Eleven open decisions</h2><p>Choose one option in every lane to assemble a coherent greenfield architecture. Each selection exposes its practical strength and trade-off; there is intentionally no universal winning combination.</p></div><span class="sticker">Build a stack</span></div>
+        <div data-decision-explorer></div>
+      </section>
+
+      <h2 id="raw-data"><span class="section-no">Decision 01</span>Raw Data</h2>
+      <p>With no legacy sources to ingest, the raw data question stops being an integration problem and becomes a design problem: what does the product need to capture, in what shape, at the point of creation? Starting clean means raw events can carry the metadata an AI system will eventually need—provenance, timestamps, ownership and confidence—rather than reconstructing it afterward. Token counts, latency and model tier should be first-class fields from the first commit too.</p>
+      <p>A team can capture raw events as loosely structured JSON and defer schema decisions, or commit early to a schema registry using Avro or Protobuf. The loose approach moves faster early and creates cleanup debt later; the strict approach costs more upfront and pays off once more than one team produces events. Instrument generously, keep the schema able to evolve, and land events in Delta Lake or Apache Iceberg so the raw layer remains versioned and queryable.</p>
+      <div class="comparison-table" data-decision-table="raw"></div>
+
+      <h2 id="clean-data"><span class="section-no">Decision 02</span>Clean Data</h2>
+      <p>Without a legacy warehouse, the question becomes which storage technologies actually match the product’s access patterns. The range runs from one consolidated PostgreSQL store with pgvector to a polyglot layout: a vector database such as Qdrant, Weaviate or Pinecone; ClickHouse or DuckDB for analytics; and OpenSearch for full text.</p>
+      <p>Embedding is lossy and one-way, so vector stores must keep original text and source as payload metadata, with a defined distance function. With no existing warehouse pulling the decision toward the middle, choose against actual query patterns rather than whatever a tutorial shows first.</p>
+      <div class="comparison-table" data-decision-table="clean"></div>
+
+      <h2 id="model-hosting"><span class="section-no">Decision 03</span>Model Hosting</h2>
+      <p>An AI-native build can establish one internal model interface from the first commit, centralizing provider selection, fallback and cost accounting before calls sprawl across the codebase. It can also design model cascading in from the start: cheap, high-volume classification or extraction goes to smaller models; frontier models are reserved for reasoning that needs them.</p>
+      <p>The gateway choice is genuinely open: adopt LiteLLM or Portkey, build a thin custom router for product-specific cost and latency logic, or place larger models behind a purpose-built inference server such as vLLM or BentoML. Those servers manage batching and memory in ways general web frameworks cannot, and a gateway makes adopting one a routing change rather than a rewrite.</p>
+      <div class="comparison-table" data-decision-table="models"></div>
+
+      <h2 id="agent-harness"><span class="section-no">Decision 04</span>Agent Harness</h2>
+      <p>This is where greenfield teams have the largest advantage and widest field. Open-source harnesses solve the same problem differently: some emphasize mature compaction and command safety, some namespace sandboxing and hard iteration caps, some a minimal loop with broad provider support, and others native human-in-the-loop and evaluation tooling. Ecosystem fit matters more than abstract capability.</p>
+      <p>The useful mental model is externalization: move cognitive burdens out of the model into inspectable structures—tiered memory, progressively disclosed skills and protocols such as MCP. Safety and execution environment must be chosen together. Application hooks buy fine-grained project policy but can be bypassed; kernel-level sandboxing is harder to bypass but coarser. Human approval should be a stateful pause and resume, not a blocking prompt.</p>
+      <p>Build the smallest harness that supports the product’s actual behavior. Keep memory, tool execution and protocol handling independently evolvable, and extend them only when real usage demands it.</p>
+      <div class="comparison-table" data-decision-table="harness"></div>
+
+      <h2 id="harness-database"><span class="section-no">Decision 05</span>Database Supporting the Agent Harness</h2>
+      <p>Agent memory, conversation history and tool logs have different durability, query and scaling characteristics from core product data. Separating them early costs little when there is no coupling to undo later.</p>
+      <p>A single PostgreSQL instance with JSONB and vector search can cover configuration, logs and embeddings at moderate scale. Dedicated relational, document and graph stores let each concern—and each tier of memory—scale and evolve independently.</p>
+      <div class="comparison-table" data-decision-table="database"></div>
+
+      <h2 id="serving-apps"><span class="section-no">Decision 06</span>Serving Apps</h2>
+      <p>Without an existing application shell, the serving layer can follow the experience. REST with server-sent events suits unidirectional token streaming; GraphQL subscriptions suit clients built around flexible queries; gRPC or WebSockets support truly bidirectional voice and collaboration. FastAPI is common because its asynchronous model can support several patterns without forcing one.</p>
+      <p>A handler declared asynchronous but calling a blocking client still blocks the event loop. Protocol choice and async discipline are separate decisions, and both must be deliberate.</p>
+      <div class="comparison-table" data-decision-table="serving"></div>
+
+      <h2 id="auth-layer"><span class="section-no">Decision 07</span>Auth Layer</h2>
+      <p>Identity can treat agents as first-class actors from the beginning: semi-autonomous entities acting on behalf of a person or organization. Human approval, sandbox policy and audit trails must all answer who—human or agent—authorized an action.</p>
+      <p>The build-versus-buy choice spans a hosted service such as Auth0, self-hosted Ory or Keycloak, and workload identity with SPIFFE/SPIRE. The permission model should distinguish personal, organizational and delegated agent access. Use deny-first rules and keep the approval classifier separate from agent prose so a compromised model cannot argue past its own controls.</p>
+      <div class="comparison-table" data-decision-table="auth"></div>
+
+      <h2 id="monitoring-layer"><span class="section-no">Decision 08</span>Monitoring Layer</h2>
+      <p>Trace-level observability into agent reasoning can be a core requirement from day one. OpenTelemetry is a strong instrumentation default, but the backend remains a decision. Every model call should record tokens, user, tenant, cost and the model tier that actually answered so a cascade is measurable rather than assumed.</p>
+      <p>LLM-native tracing through Langfuse or Arize Phoenix, usage and cost monitoring, and Prometheus/Grafana infrastructure monitoring form one strategy. Tempo or Jaeger are mature broader alternatives, but require extra instrumentation for token budgets and tool-call latency.</p>
+      <div class="comparison-table" data-decision-table="monitoring"></div>
+
+      <h2 id="security-layer"><span class="section-no">Decision 09</span>Security Layer</h2>
+      <p>A model gateway and guardrails can sit in the critical path from the first call. NeMo Guardrails or Guardrails AI make common policy declarative; a custom engine can match highly specific constraints. Either should be paired with genuine isolation, deny-first rules, an independent approval classifier and an audit trail of every tool call.</p>
+      <p>For code execution, microVMs such as Firecracker or gVisor offer strong isolation with heavier cold starts, while WebAssembly runtimes such as wasmtime start quickly when executed code does not need full VM semantics.</p>
+      <div class="comparison-table" data-decision-table="security"></div>
+
+      <h2 id="testing-layer"><span class="section-no">Decision 10</span>Testing Layer</h2>
+      <p>The evaluation framework can be built beside the product’s first features. Promptfoo is simple and configuration-driven, DeepEval provides a rich metric library with pytest-style integration, and Ragas specializes in retrieval evaluation. Evaluation scenarios should become a first-class deliverable of every agent capability.</p>
+      <p>Pin fast-moving framework dependencies behind a compatibility shim. Use the same evaluation harness in CI and at runtime so offline releases and online behavior are scored by one consistent judge.</p>
+      <div class="comparison-table" data-decision-table="testing"></div>
+
+      <h2 id="deployment"><span class="section-no">Decision 11</span>Deployment</h2>
+      <p>Deployment topology can follow the distinct resource profiles of agent workloads, tool servers and sandboxes. Kubernetes namespaces or node pools provide control; serverless suits spiky, stateless glue but conflicts with preloaded models and long inference; a unified app platform fits teams that do not want to operate Kubernetes.</p>
+      <p>A practical split is stateless application tiers that move quickly and scale to zero, alongside long-running model and inference services that are scaled deliberately and versioned independently.</p>
+      <div class="comparison-table" data-decision-table="deployment"></div>
+
+      <div class="article-divider"></div>
+      <h2 id="pieces-fit"><span class="section-no">Four operational views</span>How the Pieces Fit Together</h2>
+      <p class="lede">A list of defensible choices is not yet a coherent system. These views test how a chosen stack behaves as one request moves through it.</p>
+      <p>The workflow exposes orchestration as a real branch. The sequence makes cost-aware model escalation visible. The data flow compares consolidated and polyglot storage. The lifecycle puts an evaluation gate directly on the path to completion.</p>
+      <section class="native-views reveal" aria-label="Interactive architecture views"><div data-native-views></div></section>
+
+      <h3>Workflow view: an open orchestration choice</h3>
+      <p>A request is authenticated and tenant context resolved, then the chosen harness paradigm—a graph loop, a team of role-based agents or a durable workflow—drives reasoning and tools. All three converge on execution and completion, where the response streams while the turn is persisted and summarized in the background.</p>
+      <h3>Sequence view: a cost-aware model cascade</h3>
+      <p>The engine calls a small model first. A confident result can answer directly; a low-confidence result escalates to a larger model, which may call a tool before responding. The system persists which tier answered alongside messages and usage, making the cascade’s cost measurable.</p>
+      <h3>Data flow view: two workable answers</h3>
+      <p>One route puts content, configuration and events in a single multi-model store for operational simplicity. The other fans them into vector, analytical and search stores for workload-tuned performance. Both serve retrieval; they differ in operational burden and headroom.</p>
+      <h3>Lifecycle view: evaluation on the happy path</h3>
+      <p>Before completion, the same evaluation harness used in testing scores the turn. Passing completes it; a low score enters a bounded retry loop; exhausted retries flag the turn for human review rather than silently completing.</p>
+      <div class="pullquote reveal">The freedom of a greenfield build is that every view can be shaped around the product. The discipline is choosing deliberately when no inherited constraint will choose for you.</div>
+    </article>
+  </div>
+</main>
+<div data-contact></div><div data-footer></div>
+<script src="assets/js/site.js"></script>
+<script src="assets/js/ai-native.js"></script>
+</body>
+</html>
