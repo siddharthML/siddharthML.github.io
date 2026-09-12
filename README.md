@@ -24,7 +24,7 @@ projects.html       Projects index
 building-ai-layer.html  Interactive enterprise AI architecture article
 building-ai-native-platform.html  Interactive greenfield AI-native architecture article
 building-enterprise-agent-harness.html  Interactive enterprise agent harness guide
-publications.html   Papers, awards, writing & talks
+publications.html   Papers and awards
 bookshelf.html      The PM reading list
 
 assets/css/style.css   The whole design system: tokens, components, animation

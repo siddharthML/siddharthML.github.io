@@ -5,13 +5,13 @@
 const FOCUS = [
   {
     color: "blue", icon: "bot",
-    title: "Enterprise Agentic AI",
-    body: "I design the harness that makes agents dependable at work — long-running, multi-step execution flows serving 1200+ users across 12+ B2B clients every day, with connectors and triggers that let those agents reach live enterprise data."
+    title: "Zero-to-One & One-to-Hundred",
+    body: "I take AI products from a blank page to production, then scale them into dependable platforms — shaping the architecture, roadmap, operating model and adoption path from the first use case to repeatable growth."
   },
   {
     color: "lavender", icon: "layers",
-    title: "Zero-to-One Platforms",
-    body: "I take AI products from a blank page to production—designing the data, model, orchestration, security, evaluation and deployment foundations that let an AI-native platform grow without accumulating architectural shortcuts."
+    title: "Legacy to AI-Native",
+    body: "I have modernized an established platform with an AI layer at o9 and built an AI-native platform from scratch at MathCo. That range taught me when to evolve existing foundations, when to start fresh and how to make either path work in production."
   },
   {
     color: "pink", icon: "target",
@@ -20,8 +20,8 @@ const FOCUS = [
   },
   {
     color: "sand", icon: "users",
-    title: "Teams & Go-To-Market",
-    body: "I have led 16-member agile teams of data scientists, engineers and designers, aligned AI strategy from C-suite to customer service, and owned the pricing, positioning and patents that turned a service line into $8M of annual revenue."
+    title: "Platform Governance & GTM",
+    body: "I build the operating system around a platform: product councils, decision rights and usage-led roadmaps, alongside sales pitches, positioning, launch strategy and patents. At MathCo, that work helped turn a GenAI service line into $8M in annual revenue."
   }
 ];
 
@@ -47,10 +47,10 @@ const BACKGROUND = [
   {
     color: "pink", icon: "quote", title: "Fun Facts",
     items: [
-      { icon: "globe",     title: "Startups to government", note: "Tech startups, giant product companies, academia, government and NGOs" },
-      { icon: "cap",       title: "Arts to engineering",    note: "Went from an arts undergraduate degree to an engineering master's" },
-      { icon: "briefcase", title: "Wore most of the hats",  note: "Data science, engineering, marketing, sales, product — and everything between" },
-      { icon: "chart",     title: "Professional economist", note: "Trained in macroeconomics and forecasting, and still love it" }
+      { icon: "globe",     title: "Startups to government", note: "Worked at tech startups, global product companies, academia, government and NGOs" },
+      { icon: "cap",       title: "Economics to machine learning", note: "Studied arts, economics and engineering, then moved from economist to machine learning scientist" },
+      { icon: "briefcase", title: "Wore most of the hats",  note: "Worked across data science, engineering, product, marketing and sales — often translating between them" },
+      { icon: "chart",     title: "Worked across six cities", note: "Bangalore, Kolkata, Pune, Hyderabad, Delhi and London" }
     ]
   }
 ];

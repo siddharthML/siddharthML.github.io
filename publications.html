@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Publications — Siddharth Chatterjee</title>
-<meta name="description" content="Peer-reviewed publications, awards and writing by Siddharth Chatterjee, including agentic AI architecture and applied computer vision.">
+<title>Publications &amp; Awards — Siddharth Chatterjee</title>
+<meta name="description" content="Peer-reviewed publications and awards by Siddharth Chatterjee, including agentic AI architecture and applied computer vision.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
@@ -18,15 +18,15 @@
   <a class="back-link" href="index.html"><i data-icon="arrowLeft" data-size="18"></i> Back to Home</a>
 
   <div class="page-banner reveal" style="background:var(--lavender)">
-    <p class="eyebrow">Research &amp; writing</p>
-    <h1 class="h-1">Publications</h1>
+    <p class="eyebrow">Research &amp; recognition</p>
+    <h1 class="h-1">Publications &amp; Awards</h1>
     <p class="lead mt-0" style="color:var(--ink)">
       Peer-reviewed work on agentic AI architecture, applied computer vision and forecasting.
     </p>
   </div>
 
   <!-- ------------------------------------------------------- scholar strip -->
-  <div class="grid grid-4 mt-4">
+  <div class="grid grid-3 mt-4">
     <div class="metric reveal reveal--zoom" style="background:var(--aqua)">
       <div class="metric__n">2</div><div class="metric__l">Peer-reviewed papers</div>
     </div>
@@ -34,10 +34,8 @@
       <div class="metric__n">Top 10</div><div class="metric__l">M6 Forecasting Competition</div>
     </div>
     <div class="metric reveal reveal--zoom" style="background:var(--pink)">
-      <div class="metric__n">200+</div><div class="metric__l">Students taught at ISB</div>
-    </div>
-    <div class="metric reveal reveal--zoom" style="background:var(--sand)">
-      <div class="metric__n">2</div><div class="metric__l">Master's degrees, UCL &amp; Warwick</div>
+      <div id="scholar-total-citations" class="metric__n" data-citations="69">69</div>
+      <div class="metric__l">Total Google Scholar citations</div>
     </div>
   </div>
 
@@ -63,11 +61,20 @@
 
     <div class="stack">
       <article class="card card--hover reveal reveal--left">
-        <div class="pub">
-          <div class="pub__year">2024</div>
+        <div class="pub pub--with-cover">
+          <img class="pub__cover" src="assets/img/publication-agentic-ai.png" loading="lazy"
+               alt="Cover of the Journal of AI, Robotics &amp; Workplace Automation">
           <div>
+            <p class="eyebrow mt-0">2024</p>
             <h3 class="h-3">Agentic AI: The building blocks of sophisticated AI business applications</h3>
             <p class="pub__venue">Journal of AI, Robotics &amp; Workplace Automation · Volume 3, Issue 3 · pp. 196–210</p>
+            <a id="agentic-ai-publications-citations" class="pub__citations"
+               data-citations="64"
+               href="https://scholar.google.co.uk/scholar?oi=bibs&amp;hl=en&amp;cites=8375951292462170289"
+              target="_blank" rel="noopener" aria-label="64 citations on Google Scholar">
+              <span class="pub__citations-star" aria-hidden="true">&#9733;</span>
+              <span class="pub__citations-count">64 citations</span>
+            </a>
             <p class="muted mt-2" style="font-size:15px">
               C Chawla, <b>S Chatterjee</b>, S S Gadadinni, P Verma, S Banerjee
             </p>
@@ -88,29 +95,38 @@
       </article>
 
       <article class="card card--hover reveal reveal--right">
-        <div class="pub">
-          <div class="pub__year" style="background:var(--pink)">2021</div>
+        <div class="pub pub--with-cover">
+          <img class="pub__cover" src="assets/img/publication-machine-vision.jpg" loading="lazy"
+               alt="Cover of Machine Vision and Augmented Intelligence—Theory and Applications">
           <div>
+            <p class="eyebrow mt-0">2021</p>
             <h3 class="h-3">Suryanamaskar Pose Identification and Estimation Using No Code Computer Vision</h3>
-            <p class="pub__venue">Machine Vision and Augmented Intelligence — Theory and Applications (Springer)</p>
+            <p class="pub__venue">Machine Vision and Augmented Intelligence—Theory and Applications · pp. 85–90</p>
+            <a id="suryanamaskar-citations" class="pub__citations"
+               data-citations="5"
+               href="https://scholar.google.co.uk/scholar?oi=bibs&amp;hl=en&amp;cites=2640822950415806204"
+               target="_blank" rel="noopener" aria-label="5 citations on Google Scholar">
+              <span class="pub__citations-star" aria-hidden="true">&#9733;</span>
+              <span class="pub__citations-count">5 citations</span>
+            </a>
             <p class="muted mt-2" style="font-size:15px">
               U Bhaumik, <b>S Chatterjee</b>, K Kumar Singh
             </p>
             <p style="font-size:15px">
-              Pose identification and estimation for Suryanamaskar sequences, built through a no-code
-              computer vision pipeline — lowering the barrier between domain experts and working
-              vision models.
+              Pose identification and estimation for Suryanamaskar sequences, built through a
+              no-code computer vision pipeline to make applied vision more accessible.
             </p>
             <div>
               <span class="tag">Computer Vision</span><span class="tag">Pose Estimation</span>
               <span class="tag">No-Code ML</span>
             </div>
-            <a class="btn" data-link="scholar" target="_blank" rel="noopener">
-              View on Scholar <i data-icon="external" data-size="16"></i>
+            <a class="btn btn--lavender mt-2" href="https://link.springer.com/chapter/10.1007/978-981-16-5078-9_8" target="_blank" rel="noopener">
+              Read Chapter <i data-icon="external" data-size="16"></i>
             </a>
           </div>
         </div>
       </article>
+
     </div>
   </section>
 
@@ -148,48 +164,6 @@
         <p style="font-weight:700;font-size:14px;display:flex;gap:8px;align-items:center;margin-bottom:0">
           About the scholarship <i data-icon="external" data-size="16"></i>
         </p>
-      </a>
-    </div>
-  </section>
-
-  <!-- ------------------------------------------------------- writing & talks -->
-  <section class="mt-4">
-    <div class="numbered">
-      <span class="numbered__n" style="background:var(--aqua)">03</span>
-      <h2 class="h-2 mt-0">Writing &amp; Talks</h2>
-    </div>
-
-    <div class="grid grid-3">
-      <a class="card card--hover reveal reveal--left"
-         href="https://medium.com/mathco-ai/ask-nuclios-navigating-the-complexity-of-modern-business-data-with-genai-26d93147046a"
-         target="_blank" rel="noopener">
-        <div class="icon-tile panel-sand"><i data-icon="pen"></i></div>
-        <h3 class="h-3">Ask NucliOS</h3>
-        <p class="mt-0" style="font-size:15px">
-          Navigating the complexity of modern business data with GenAI.
-        </p>
-        <span class="tag">Article</span>
-      </a>
-
-      <a class="card card--hover reveal"
-         href="https://medium.com/mathco-ai/ai-stories-transforming-dashboards-and-data-into-insightful-shareable-stories-93bde9b9a2a3"
-         target="_blank" rel="noopener">
-        <div class="icon-tile panel-aqua"><i data-icon="chart"></i></div>
-        <h3 class="h-3">AI Stories</h3>
-        <p class="mt-0" style="font-size:15px">
-          Transforming dashboards and data into insightful, shareable stories.
-        </p>
-        <span class="tag">Article</span>
-      </a>
-
-      <a class="card card--hover reveal reveal--right"
-         href="https://www.youtube.com/watch?v=WqpCh7FS7JI" target="_blank" rel="noopener">
-        <div class="icon-tile panel-pink"><i data-icon="quote"></i></div>
-        <h3 class="h-3">Talk</h3>
-        <p class="mt-0" style="font-size:15px">
-          A recorded session on building GenAI products for the enterprise.
-        </p>
-        <span class="tag">Video</span>
       </a>
     </div>
   </section>

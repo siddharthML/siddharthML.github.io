@@ -479,7 +479,21 @@ a.card, .card--link { text-decoration: none; display: block; }
   background: var(--aqua); border: var(--border); box-shadow: var(--shadow-sm);
   font-size: 15px; font-weight: 700;
 }
+.pub--with-cover { grid-template-columns: 132px 1fr; }
+.pub__cover {
+  width: 132px; border: var(--border); box-shadow: var(--shadow-sm);
+}
 .pub__venue { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+.pub__citations {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+  color: var(--ink); font-size: 13px; font-weight: 700; text-decoration: none;
+}
+.pub__citations-star {
+  display: grid; place-items: center; width: 24px; height: 24px;
+  border: 2px solid var(--ink); background: #f3c95f; box-shadow: 2px 2px 0 var(--ink);
+  font-size: 14px; line-height: 1;
+}
+.pub__citations:hover .pub__citations-count { text-decoration: underline; text-underline-offset: 3px; }
 
 /* ------------------------------------------------- background mini-cards */
 /* Each fact is its own bordered sub-card rather than a bullet in a list. */
@@ -617,4 +631,5 @@ a.card, .card--link { text-decoration: none; display: block; }
   .page-banner { padding: 24px; }
   .pub { grid-template-columns: 1fr; }
   .pub__year { width: 84px; }
+  .pub__cover { width: 112px; }
 }
