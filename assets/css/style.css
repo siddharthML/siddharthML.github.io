@@ -627,6 +627,7 @@ a.card, .card--link { text-decoration: none; display: block; }
 @media (max-width: 620px) {
   :root { --shadow: 5px 5px 0 var(--ink); --shadow-lg: 7px 7px 0 var(--ink); }
   .grid-4, .grid-5, .shelf-grid { grid-template-columns: repeat(2, 1fr); }
+  .focus-grid { grid-template-columns: 1fr; }
   .card { padding: 20px; }
   .page-banner { padding: 24px; }
   .pub { grid-template-columns: 1fr; }
