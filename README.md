@@ -30,6 +30,7 @@ assets/js/site.js      Nav, contact section, footer, icons, scroll reveal
 assets/js/home.js      Homepage content (focus cards, projects, metrics)
 assets/js/bookshelf.js Bookshelf rendering
 assets/js/ai-layer.js  Interactive architecture explorer
+assets/diagrams/        Embedded Archify workflow, sequence, data-flow, and lifecycle views
 assets/js/data.js      Book list — single source of truth
 assets/covers/         Book cover images
 assets/img/            Put portrait.jpg here to replace the monogram in the hero

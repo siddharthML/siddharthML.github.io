@@ -260,6 +260,7 @@ body.article-page { background: var(--canvas-2); }
   transition: opacity .2s var(--ease), stroke-width .2s var(--ease), stroke .2s var(--ease);
 }
 .diagram-path.is-active { opacity: 1; stroke: var(--ink); stroke-width: 4; stroke-dasharray: 8 6; animation: dashflow .8s linear infinite; }
+.diagram-path.is-dashed { stroke-dasharray: 7 6; }
 @keyframes dashflow { to { stroke-dashoffset: -14; } }
 .diagram-node {
   position: absolute;
@@ -327,6 +328,50 @@ body.article-page { background: var(--canvas-2); }
 .diagram-step { margin-top: 18px; padding-top: 16px; border-top: 2px solid var(--ink); }
 .diagram-step strong { display: block; margin-bottom: 6px; }
 .diagram-help { padding: 13px 20px; border-top: 3px solid var(--ink); background: var(--blue); font-size: 12px; font-weight: 700; }
+.diagram-help a { color: inherit; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.diagram-canvas--platform { width: 1200px; min-width: 1200px; height: 760px; min-height: 760px; }
+.platform-boundary {
+  position: absolute;
+  left: 388px;
+  top: 150px;
+  width: 795px;
+  height: 505px;
+  border: 3px solid var(--ink);
+  background: rgba(255,255,255,.25);
+  pointer-events: none;
+}
+.platform-boundary span {
+  position: absolute;
+  top: 13px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 8px;
+  background: var(--canvas-2);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.platform-boundary small {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.archify-frame-wrap {
+  height: min(760px, 76vh);
+  min-height: 620px;
+  padding: 14px;
+  background: #17191f;
+}
+.archify-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--ink);
+  background: #17191f;
+}
 
 .lens-grid { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 10px; margin: 28px 0 38px; }
 .lens-card {
