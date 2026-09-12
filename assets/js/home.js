@@ -11,7 +11,7 @@ const FOCUS = [
   {
     color: "lavender", icon: "layers",
     title: "Zero-to-One Platforms",
-    body: "I take AI products from a blank page to production. AskNucliOS, the no-code GenAI platform I built, cut project development time by 95% and now powers 50+ applications across healthcare, marketing, retail and CPG."
+    body: "I take AI products from a blank page to production—designing the data, model, orchestration, security, evaluation and deployment foundations that let an AI-native platform grow without accumulating architectural shortcuts."
   },
   {
     color: "pink", icon: "target",
