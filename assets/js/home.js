@@ -69,13 +69,6 @@ const PROJECTS = [
     body: "An interactive playbook for the open decisions behind a greenfield platform—from data and model routing to orchestration, security, evaluation, and deployment.",
     tags: ["AI-native", "Architecture", "Interactive guide"],
     href: "building-ai-native-platform.html"
-  },
-  {
-    color: "aqua", icon: "gear", label: "Production guide · Agent systems",
-    title: "Building the Enterprise Agent Harness",
-    body: "A production blueprint for the memory, skills, protocols, policy, orchestration, observability, and evaluation that make enterprise agents dependable.",
-    tags: ["Agent harnesses", "Enterprise AI", "Production systems"],
-    href: "building-enterprise-agent-harness.html"
   }
 ];
 
