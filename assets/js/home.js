@@ -57,11 +57,11 @@ const BACKGROUND = [
 
 const PROJECTS = [
   {
-    color: "blue", icon: "layers", label: "Architecture guide · Legacy modernization",
-    title: "Building an AI Layer on a Legacy Platform",
-    body: "A practical blueprint for adding a scalable AI control plane without forcing established systems, teams, or release cycles to move in lockstep.",
-    tags: ["Enterprise AI", "Architecture", "Agentic systems"],
-    href: "building-ai-layer.html"
+    color: "aqua", icon: "gear", label: "Production guide · Agent systems",
+    title: "Building the Enterprise Agent Harness",
+    body: "A production blueprint for the memory, skills, protocols, policy, orchestration, observability, and evaluation that make enterprise agents dependable.",
+    tags: ["Agent harnesses", "Enterprise AI", "Production systems"],
+    href: "building-enterprise-agent-harness.html"
   },
   {
     color: "lavender", icon: "spark", label: "Architecture guide · Greenfield systems",
